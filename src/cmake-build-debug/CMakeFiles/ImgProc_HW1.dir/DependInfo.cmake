@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/Users/otmanesabir/Desktop/ImgProc-HW1/main.cpp" "/Users/otmanesabir/Desktop/ImgProc-HW1/cmake-build-debug/CMakeFiles/ImgProc_HW1.dir/main.cpp.o"
+  "/Users/otmanesabir/Desktop/ImgProc-HW1/src/main.cpp" "/Users/otmanesabir/Desktop/ImgProc-HW1/src/cmake-build-debug/CMakeFiles/ImgProc_HW1.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "AppleClang")
 
