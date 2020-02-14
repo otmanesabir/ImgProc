@@ -12,7 +12,7 @@ def getParams(argss):
     elif argv[1] == 'd':
         operation = 2
 
-    se = argv[2]
+    se = "../input/" + argv[2]
     infile = "../input/" + argv[3]
     outfile = argv[4]
     
@@ -22,10 +22,14 @@ def genMatrix(file):
     return [[int(val) for val in line.split(',')] for line in file]
 
 def main():
-    operation, se, infile, outfile = getParams(argv)
+    operation, s, infile, outfile = getParams(argv)
     f = open(infile, "r")
+    se = open(s, "r")
     matrix = genMatrix(f)
+    seMatrix = genMatrix(se)
     print(matrix)
+    print(seMatrix)
+
 
 if __name__ == '__main__':
         main()
