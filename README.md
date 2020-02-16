@@ -7,11 +7,11 @@ Homework 1 "MORPHOLOGICAL OPENING AND CLOSING"
 
 ## TO DO
 
-- Create function to parse command line arguments
-- Create function to parse the input files and return matrices
-- Generate the Structuring Element text files
-- Implement ersosion
-- Implement dilation 
+- ~~Create function to parse command line arguments~~
+- ~~Create function to parse the input files and return matrices~~
+- ~~Generate the Structuring Element text files~~
+- Implement ersosion - in progress :) 
+- Implement dilation
 
 
 ## IMPORTANT
