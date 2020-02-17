@@ -25,42 +25,37 @@ def genMatrix(file):
     return [[int(val) for val in line.split(',')] for line in file]
 
 
-# Ugly Brute Force :
-# Check if the structuring element's coord. sys. fits
-# If it doesn't, then continue iterating
-# If it does, then check the rest of the elements
-# You can check the rest of the elements
-# If all of the remaining elements fit, then mark the coordinate sys.
-# If one element, doesn't fit, then raise flag and break.
-# If flag is raised, then ignore everything and proceed to next iteration
-# If not mark the coord. sys. with 1
-# !!- Still need to implement border control. -!!
-#
+# EROSION USING MIN - ONLY TESTED FOR BINARY IMAGES
+# The value of the output pixel is the minimum value of all the pixels in the input pixel's neighborhood.
+# In a binary image, if any of the pixels is set to 0, the output pixel is set to 0.
+# the min_val function finds smallest element in the sub-matrix
 
 def erosion(matrix, se):
     ans = np.zeros((len(matrix), len(matrix[0])))
     for i in range(len(matrix)):
         for j in range(len(matrix[0])):
-            if matrix[i][j] != se[0][0]:
-                # skip iteration
-                ans[i][j] = '0'
-            elif matrix[i][j] == se[0][0]:
-                x = i
-                y = j
-                flag = True
-                for a in range(len(se)):
-                    for b in range(len(se[0])):
-                        if se[a][b] != matrix[x][y]:
-                            flag = False
-                            break
-                        y += 1
-                    if not flag:
-                        break
-                if flag:
-                    ans[i][j] = '1'
-                else:
-                    ans[i][j] = '0'
+            ans[i][j] = min_val(matrix, i, j, se)
     print(ans)
+
+
+def min_val(matrix, a, b, se):
+    i = a
+    j = b
+    mini_val = 1
+    for x in range(len(se)):
+        for y in range(len(se[0])):
+            if 0 <= b < len(matrix[0]) - 1:
+                if matrix[a][b] < mini_val:
+                    mini_val = matrix[a][b]
+                b += 1
+            else:
+                break
+        if 0 <= a < len(matrix) - 1:
+            a += 1
+            b = j
+        else:
+            break
+    return mini_val
 
 
 def main():
@@ -69,8 +64,13 @@ def main():
     se = open(s, "r")
     matrix = genMatrix(f)
     se_matrix = genMatrix(se)
-    print(matrix)
-    print(se_matrix)
+    # view in matrix format
+    print("Original")
+    for row in matrix:
+        print(' '.join(map(str, row)))
+    print("Erosion :")
+    erosion(matrix, se_matrix)
+    # print(se_matrix)
 
 
 if __name__ == '__main__':
