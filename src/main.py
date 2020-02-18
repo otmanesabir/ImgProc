@@ -25,6 +25,25 @@ def genMatrix(file):
     return [[int(val) for val in line.split(',')] for line in file]
 
 
+def min_val(matrix, a, b, se):
+    j = b
+    mini_val = 255
+    for x in range(len(se)):
+        for y in range(len(se[0])):
+            if 0 <= b < len(matrix[0]):
+                if matrix[a][b] < mini_val:
+                    mini_val = matrix[a][b]
+                b += 1
+            else:
+                break
+        if 0 <= a < len(matrix) - 1:
+            a += 1
+            b = j
+        else:
+            break
+    return mini_val
+
+
 # EROSION USING MIN - ONLY TESTED FOR BINARY IMAGES
 # The value of the output pixel is the minimum value of all the pixels in the input pixel's neighborhood.
 # In a binary image, if any of the pixels is set to 0, the output pixel is set to 0.
@@ -38,25 +57,7 @@ def erosion(matrix, se):
     print(ans)
 
 
-def min_val(matrix, a, b, se):
-    i = a
-    j = b
-    mini_val = 1
-    for x in range(len(se)):
-        for y in range(len(se[0])):
-            if 0 <= b < len(matrix[0]) - 1:
-                if matrix[a][b] < mini_val:
-                    mini_val = matrix[a][b]
-                b += 1
-            else:
-                break
-        if 0 <= a < len(matrix) - 1:
-            a += 1
-            b = j
-        else:
-            break
-    return mini_val
-
+# reverse a structuring element
 
 def main():
     operation, s, infile, outfile = getParams(argv)
