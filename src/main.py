@@ -1,6 +1,7 @@
 from sys import argv
 import numpy as np
-
+import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 
 def getParams(argss):
     op = 0
@@ -44,12 +45,13 @@ def min_val(matrix, a, b, se, mini_val):
     j = b
     for x in range(len(se)):
         for y in range(len(se[0])):
-            if 0 <= b < len(matrix[0]):
-                if matrix[a][b] < mini_val:
-                    mini_val = matrix[a][b]
-                b += 1
-            else:
-                break
+            if se[x][y] == 1:
+                if 0 <= b < len(matrix[0]):
+                    if matrix[a][b] < mini_val:
+                        mini_val = matrix[a][b]
+                    b += 1
+                else:
+                    break
         if 0 <= a < len(matrix) - 1:
             a += 1
             b = j
@@ -101,7 +103,7 @@ def main():
     se = open(s, "r")
     matrix = genMatrix(f)
     se_matrix = genMatrix(se)
-
+    plt.imsave('../output/filename.png', np.array(erosion(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
     if operation == 1:
         np.savetxt(outfile, erosion(matrix, se_matrix), fmt='%i', delimiter=',')
     else:
