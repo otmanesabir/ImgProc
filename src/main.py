@@ -25,22 +25,9 @@ def genMatrix(file):
     return [[int(val) for val in line.split(',')] for line in file]
 
 
-# EROSION USING MIN - ONLY TESTED FOR BINARY IMAGES
-# The value of the output pixel is the minimum value of all the pixels in the input pixel's neighborhood.
-# In a binary image, if any of the pixels is set to 0, the output pixel is set to 0.
-# the min_val function finds smallest element in the sub-matrix
-
-def erosion(matrix, se):
-    ans = np.zeros((len(matrix), len(matrix[0])))
-    for i in range(len(matrix)):
-        for j in range(len(matrix[0])):
-            ans[i][j] = min_val(matrix, i, j, se)
-    print(ans)
-
 def min_val(matrix, a, b, se):
-    i = a
     j = b
-    mini_val = 1
+    mini_val = 255
     for x in range(len(se)):
         for y in range(len(se[0])):
             if 0 <= b < len(matrix[0]):
@@ -89,6 +76,21 @@ def max_val(matrix, a, b, se):
             break   
     return max_val
                         
+
+# EROSION USING MIN - ONLY TESTED FOR BINARY IMAGES
+# The value of the output pixel is the minimum value of all the pixels in the input pixel's neighborhood.
+# In a binary image, if any of the pixels is set to 0, the output pixel is set to 0.
+# the min_val function finds smallest element in the sub-matrix
+
+def erosion(matrix, se):
+    ans = np.zeros((len(matrix), len(matrix[0])))
+    for i in range(len(matrix)):
+        for j in range(len(matrix[0])):
+            ans[i][j] = min_val(matrix, i, j, se)
+    print(ans)
+
+
+# reverse a structuring element
 
 def main():
     operation, s, infile, outfile = getParams(argv)
