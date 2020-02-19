@@ -67,7 +67,7 @@ def min_val(matrix, a, b, se, mini_val):
 
 def dilation(matrix, se):
     res = np.array(matrix)
-    maxi = np.max(res)
+    maxi = np.min(res)
     ans = np.zeros((len(matrix), len(matrix[0])))
     for i in range(len(matrix)):
         for j in range(len(matrix[0])):
@@ -80,14 +80,13 @@ def max_val(matrix, a, b, se, maxi_val):
     j = b
     for x in range(len(se)):
         for y in range(len(se[0])):
-            # print(max_val, i, j)
-            if 0 <= b < len(matrix[0]):
-                if matrix[i][j] > maxi_val:
-                    maxi_val = matrix[i][j]
-                b += 1
-            else:
-                # max_val = 0
-                break
+            if se[x][y] == 1:
+                if 0 <= b < len(matrix[0]):
+                    if matrix[a][b] >= maxi_val:
+                        maxi_val = matrix[a][b]
+                    b += 1
+                else:
+                    break
         if 0 <= a < len(matrix) - 1:
             a += 1
             b = j
@@ -103,7 +102,8 @@ def main():
     se = open(s, "r")
     matrix = genMatrix(f)
     se_matrix = genMatrix(se)
-    plt.imsave('../output/filename.png', np.array(erosion(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
+    plt.imsave('../output/erosion.png', np.array(erosion(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
+    plt.imsave('../output/dilation.png', np.array(dilation(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
     if operation == 1:
         np.savetxt(outfile, erosion(matrix, se_matrix), fmt='%i', delimiter=',')
     else:
