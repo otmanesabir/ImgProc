@@ -25,6 +25,7 @@ pics!!
 
 - Gen info
 - Actions and findings for asymmetric SE on f3
+  - "demonstrate that the chosen border handling then can introduce artifacts."
 - Chose 3 real world pictures that present different problems
   - Description of the problems
   - Purpose of the operations applied

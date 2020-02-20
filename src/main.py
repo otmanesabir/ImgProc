@@ -2,7 +2,7 @@ from sys import argv
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
-
+from image_to_pixel import extractPixels
 
 def getParams(argss):
     op = 0
@@ -163,6 +163,7 @@ def main():
     f = open(infile, "r")
     se = open(s, "r")
     matrix = genMatrix(f)
+    print(matrix)
     se_matrix = genMatrix(se)
     plt.imsave('../output/imgs/erosion.png', np.array(erosion(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
     plt.imsave('../output/imgs/dilation.png', np.array(dilation(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
