@@ -61,7 +61,6 @@ FILE FORMAT 'comma separated values (CSV)', for example (5x3 definition domain):
 > opening though dilation of 'ef3_e4.txt' by backward diagonal of size 9 &#8594; of3_o4.txt
 
 > one self-chosen experiment with an asymmetric SE (cf. above, add input/output file names to the respective report section)
-
  
 > at least three self-chosen images (cf. above, add input/output file names to the respective report section)  
 

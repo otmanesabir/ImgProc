@@ -7,14 +7,18 @@ import matplotlib.cm as cm
 def getParams(argss):
     op = 0
     # e = 1, d = 2
-    if len(argss) < 5 or argv[1] not in ('e', 'd'):
-        print("usage: e/d <SE file> <input file> <output file>")
+    if len(argss) < 5 or argv[1] not in ('e', 'd', 'o', 'c'):
+        print("usage: e/d/o/c <SE file> <input file> <output file>")
         exit()
 
     if argv[1] == 'e':
         op = 1
     elif argv[1] == 'd':
         op = 2
+    elif argv[1] == 'o':
+        op = 3
+    elif argv[1] == 'c':
+        op = 4
 
     se = "../input/" + argv[2]
     infile = "../input/" + argv[3]
@@ -166,9 +170,12 @@ def main():
     plt.imsave('../output/imgs/closing.png', np.array(closing(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
     if operation == 1:
         np.savetxt(outfile, erosion(matrix, se_matrix), fmt='%i', delimiter=',')
-    else:
+    elif operation == 2:
         np.savetxt(outfile, dilation_r(matrix, se_matrix), fmt='%i', delimiter=',')
-
-
+    elif operation == 3: 
+        np.savetxt(outfile, opening(matrix, se_matrix), fmt='%i', delimiter=',')
+    else:
+        np.savetxt(outfile, closing(matrix, se_matrix), fmt='%i', delimiter=',')
+    
 if __name__ == '__main__':
     main()
