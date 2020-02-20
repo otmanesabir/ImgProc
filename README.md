@@ -4,6 +4,13 @@ Image Processing (ImgProc)
 Image Processing Course Spring 2020
 Homework 1 "MORPHOLOGICAL OPENING AND CLOSING"  
 
+## NOTICE 
+I'm not sure if the opening and closing are correct. The professor says reverse the structuring element
+but the internet doesn't. I made a little dilation reverse which returns
+the same values s the normal one, which makes sense? But I'll try adding an erosion
+which shouldn't return something similar.  For now, I used the normal ones and exported the results to enjoy the cool
+pics!! 
+
 
 ## TO DO
 
@@ -11,7 +18,7 @@ Homework 1 "MORPHOLOGICAL OPENING AND CLOSING"
 - ~~Create function to parse the input files and return matrices~~
 - ~~Generate the Structuring Element text files~~
 - ~~Implement ersosion~~
-- Implement dilation
+- ~~Implement dilation~~~
 - Implement opening
 - Implement closing 
 
