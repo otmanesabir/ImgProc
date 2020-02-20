@@ -9,8 +9,7 @@ I'm not sure if the opening and closing are correct. The professor says reverse 
 but the internet doesn't. I made a little dilation reverse which returns
 the same values s the normal one, which makes sense? But I'll try adding an erosion
 which shouldn't return something similar.  For now, I used the normal ones and exported the results to enjoy the cool
-pics!! 
-
+pics!!
 
 ## TO DO
 
@@ -22,6 +21,15 @@ pics!!
 - Implement opening
 - Implement closing 
 
+## REPORT CONTENT
+
+- Gen info
+- Actions and findings for asymmetric SE on f3
+- Chose 3 real world pictures that present different problems
+  - Description of the problems
+  - Purpose of the operations applied
+  - Choice of SEs
+  - Include output in report and also as seperate files
 
 ## IMPORTANT
 
