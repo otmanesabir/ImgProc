@@ -2,7 +2,8 @@ from sys import argv
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
-from image_to_pixel import extractPixels
+import cv2
+
 
 def getParams(argss):
     op = 0
@@ -21,8 +22,8 @@ def getParams(argss):
         op = 4
 
     se = "../input/" + argv[2]
-    infile = "../input/" + argv[3]
-    outfile = "../output/" + argv[4]
+    infile = "../input/test/" + argv[3]
+    outfile = "../output/images/" + argv[4]
 
     return op, se, infile, outfile
 
@@ -100,52 +101,9 @@ def max_val(matrix, a, b, se, maxi_val):
     return maxi_val
 
 
-# Uses reverse structuring element but same logic as previous dilation
-# This should return the same result as a normal dilation because we only need one single check
-# to cross the entire place
-
-def max_val_reverse(matrix, a, b, se, maxi_val):
-    j = b
-    x = len(se) - 1
-    while x >= 0:
-        y = len(se[0]) - 1
-        while y >= 0:
-            if se[x][y] == 1:
-                if 0 <= b < len(matrix[0]):
-                    if matrix[a][b] > maxi_val:
-                        maxi_val = matrix[a][b]
-                    b += 1
-                else:
-                    break
-            y -= 1
-        if 0 <= a < len(matrix) - 1:
-            a += 1
-            b = j
-            x -= 1
-        else:
-            break
-    return maxi_val
-
-
-def dilation_r(matrix, se):
-    res = np.array(matrix)
-    maxi = np.min(res)
-    ans = np.zeros((len(matrix), len(matrix[0])))
-    for i in range(len(matrix)):
-        for j in range(len(matrix[0])):
-            ans[i][j] = max_val_reverse(matrix, i, j, se, maxi)
-    return ans
-
-
-
 # OPENING : EROSION + DILATION
 # CLOSING : DILATION + EROSION
-# I'm not sure about using a reversed structuring element?
-# I found a website where nothing is mentioned about reversing the structuring element.
 # https://homepages.inf.ed.ac.uk/rbf/HIPR2/morops.htm
-# I still made a reverse dilation function which uses the SE from bottom-right
-# It returns the same as a normal dilation (which kinda makes sense?)
-# Imma try implementing a reverse erosion which should return a different/shifted output.
 
 def opening(matrix, se):
     ans = np.zeros((len(matrix), len(matrix[0])))
@@ -160,23 +118,17 @@ def closing(matrix, se):
 
 def main():
     operation, s, infile, outfile = getParams(argv)
-    f = open(infile, "r")
-    se = open(s, "r")
-    matrix = genMatrix(f)
+    matrix = cv2.imread(infile, 0)
     print(matrix)
+    se = open(s, "r")
     se_matrix = genMatrix(se)
-    plt.imsave('../output/imgs/erosion.png', np.array(erosion(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
-    plt.imsave('../output/imgs/dilation.png', np.array(dilation(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
-    plt.imsave('../output/imgs/opening.png', np.array(opening(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
-    plt.imsave('../output/imgs/closing.png', np.array(closing(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
-    if operation == 1:
-        np.savetxt(outfile, erosion(matrix, se_matrix), fmt='%i', delimiter=',')
-    elif operation == 2:
-        np.savetxt(outfile, dilation_r(matrix, se_matrix), fmt='%i', delimiter=',')
-    elif operation == 3: 
-        np.savetxt(outfile, opening(matrix, se_matrix), fmt='%i', delimiter=',')
-    else:
-        np.savetxt(outfile, closing(matrix, se_matrix), fmt='%i', delimiter=',')
-    
+    plt.imsave(outfile, np.array(erosion(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
+    # if operation == 1:
+    #    np.savetxt(outfile, erosion(matrix, se_matrix), fmt='%i', delimiter=',')
+    # else:
+    #    np.savetxt(outfile, dilation(matrix, se_matrix), fmt='%i', delimiter=',')
+    #
+
 if __name__ == '__main__':
+    # test()
     main()
