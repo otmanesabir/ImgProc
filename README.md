@@ -9,8 +9,7 @@ I'm not sure if the opening and closing are correct. The professor says reverse 
 but the internet doesn't. I made a little dilation reverse which returns
 the same values s the normal one, which makes sense? But I'll try adding an erosion
 which shouldn't return something similar.  For now, I used the normal ones and exported the results to enjoy the cool
-pics!! 
-
+pics!!
 
 ## TO DO
 
@@ -22,6 +21,16 @@ pics!!
 - Implement opening
 - Implement closing 
 
+## REPORT CONTENT
+
+- Gen info
+- Actions and findings for asymmetric SE on f3
+  - "demonstrate that the chosen border handling then can introduce artifacts."
+- Chose 3 real world pictures that present different problems
+  - Description of the problems
+  - Purpose of the operations applied
+  - Choice of SEs
+  - Include output in report and also as seperate files
 
 ## IMPORTANT
 
@@ -61,7 +70,6 @@ FILE FORMAT 'comma separated values (CSV)', for example (5x3 definition domain):
 > opening though dilation of 'ef3_e4.txt' by backward diagonal of size 9 &#8594; of3_o4.txt
 
 > one self-chosen experiment with an asymmetric SE (cf. above, add input/output file names to the respective report section)
-
  
 > at least three self-chosen images (cf. above, add input/output file names to the respective report section)  
 

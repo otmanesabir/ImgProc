@@ -1,3 +1,6 @@
+import os
+import time
+
 def test():
     directory = '../input/test/512/'
     se = open('../input/SE2.txt', 'r')
