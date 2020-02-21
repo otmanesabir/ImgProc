@@ -115,32 +115,81 @@ Jacobs University Bremen \hfill \mytoday\\
 \begin{center}
 {\Large \sheettitle{} {\assignment}\\}
 \end{center}
-
-\large\texbf{General Information} \\
-?????\\
-
-\large\texbf{Experiment 1: Symmetric vs. Asymmetric SE on f3} \\ 
+\\
+\large\texbf{Experiment 1: Symmetric vs. Asymmetric SE (on f3.png)} \\ 
 \begin{figure}[htp]
     \centering
     \includegraphics[width=6cm]{eroSym.png}
-    \caption{Erosion with Symmetric SE}
+    \caption{Erosion with Symmetric SE that is a backward diagonal of size 9 (SE5.txt)}
     \label{fig:erosionSym}
 \end{figure}
 \begin{figure}[htp]
     \centering
     \includegraphics[width=6cm]{eroAsym.png}
-    \caption{Erosion with Asymmetric SE}
+    \caption{Erosion with Asymmetric SE that is a 9x10 resembling a backward diagonal (SE7.txt)}
     \label{fig:erosionAsym}
-\end{figure}
-
-The symmetric structuring element that we chose for eroding the image f3 was a backward diagonal of size 9 (SE5.txt). Figure 1 depicts this result. \\
-
-The asymmetric structuring element that we chose for the same operation was a 9x10 that closely resembles a backward diagonal (SE7.txt). \\\
-
-As expected when using an asymmetric SE, the chosen border handling method does introduce an artifact to the image. If you were to observe and compare Figure 1 and 2 closely you can see that the bottom border of Figure 2 contains a row of white space. This is easier to see when viewing the image with a black background. \\
+\end{figure} \\
+Border effects tend to occur when using an asymmetric SE that does not fit the definition domain of the image set.
+As expected the chosen border handling method does introduce artifacts to the image.\\ \\
+A possible explanation for this could be the fact that the definition domain of the image set decreases when doing the operation due to image borders not being handled correctly.\\ \\
+If you were to observe and compare Figure 1 and 2 closely you can see that the bottom border of Figure 2 contains a row of white space. This is evident when viewing the image with a black background. \\
 
 \newpage
-\large\texbf{} \\ 
+\large\texbf{Experiment 2: Improving the clarity of handwritten digits} \\ 
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=8cm]{six.png}
+    \caption{Handwritten grayscale six}
+    \label{fig:erosionSym}
+\end{figure}\\
+As visible in the image above, the six is a little thick with the white circle in the middle not that evident.
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=8cm]{dilated_six.png}
+    \caption{Dilated six}
+    \label{fig:erosionAsym}
+\end{figure}\\
+After dilating the image with a structuring element that is a square of size 15 (SE10.txt), we get a sharper six.\\
+A possible use case for this would be feature extraction. A classification algorithm could more efficiently extract features that maps the digit as a six.
+
+\newpage
+\large\texbf{Experiment 3: Cell segmentation} \\ 
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=8cm]{nuclei.png}
+    \caption{Original image}
+    \label{fig:erosionSym}
+\end{figure}
+\begin{figure}[ht] 
+  \label{ fig7} 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=.95\linewidth]{nuclei_erosion.png} 
+    \caption{Erosion} 
+    \vspace{4ex}
+  \end{minipage}%%
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=.95\linewidth]{nuclei_dilation.png} 
+    \caption{Dilation} 
+    \vspace{4ex}
+  \end{minipage} 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=.95\linewidth]{opening.png} 
+    \caption{Opening} 
+    \vspace{4ex}
+  \end{minipage}%% 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=.95\linewidth]{nuclei_closing.png} 
+    \caption{Closing} 
+    \vspace{4ex}
+  \end{minipage} 
+\end{figure} \\
+For these operations we used a parallelogram structuring element(SE11). We chose this shape for this image as there are a lot of circular structures that we wanted to highlight. There is a lot more contrast in the images that had the operations done on them; helping clearly segment each cellular structure.\\
+
+The dilated image has the clearest segmentation between structures. However, the opened image also shows clear segmentation while not having as jarring of a contrast. \\
 
 
 \end{document}
