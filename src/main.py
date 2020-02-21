@@ -23,9 +23,10 @@ def getParams(argss):
 
     se = "../input/" + argv[2]
     infile = "../input/test/" + argv[3]
-    outfile = "../output/images/" + argv[4]
+    outfile_e = "../output/images/e_" + argv[4] 
+    outfile_d = "../output/images/d_" + argv[4]
 
-    return op, se, infile, outfile
+    return op, se, infile, outfile_e, outfile_d
 
 
 def genMatrix(file):
@@ -117,12 +118,13 @@ def closing(matrix, se):
 
 
 def main():
-    operation, s, infile, outfile = getParams(argv)
+    operation, s, infile, outfile_e, outfile_d = getParams(argv)
     matrix = cv2.imread(infile, 0)
     print(matrix)
     se = open(s, "r")
     se_matrix = genMatrix(se)
-    plt.imsave(outfile, np.array(erosion(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
+    plt.imsave(outfile_e, np.array(erosion(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
+    plt.imsave(outfile_d, np.array(dilation(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
     # if operation == 1:
     #    np.savetxt(outfile, erosion(matrix, se_matrix), fmt='%i', delimiter=',')
     # else:
