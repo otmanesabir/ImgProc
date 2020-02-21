@@ -113,6 +113,7 @@ def opening(matrix, se):
 
 
 def closing(matrix, se):
+    ans = np.zeros((len(matrix), len(matrix[0])))
     ans = dilation(matrix, se)
     return erosion(ans, se)
 
