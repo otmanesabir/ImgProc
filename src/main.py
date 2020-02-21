@@ -123,8 +123,8 @@ def main():
     print(matrix)
     se = open(s, "r")
     se_matrix = genMatrix(se)
-    plt.imsave(outfile_e, np.array(erosion(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
-    plt.imsave(outfile_d, np.array(dilation(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
+    plt.imsave(outfile_e, np.array(opening(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
+    plt.imsave(outfile_d, np.array(closing(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
     # if operation == 1:
     #    np.savetxt(outfile, erosion(matrix, se_matrix), fmt='%i', delimiter=',')
     # else:
