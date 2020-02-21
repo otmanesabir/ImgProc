@@ -112,6 +112,7 @@ def opening(matrix, se):
 
 
 def closing(matrix, se):
+    ans = np.zeros((len(matrix), len(matrix[0])))
     ans = dilation(matrix, se)
     return erosion(ans, se)
 
@@ -122,7 +123,7 @@ def main():
     print(matrix)
     se = open(s, "r")
     se_matrix = genMatrix(se)
-    plt.imsave(outfile, np.array(erosion(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
+    plt.imsave(outfile, np.array(dilation(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
     # if operation == 1:
     #    np.savetxt(outfile, erosion(matrix, se_matrix), fmt='%i', delimiter=',')
     # else:
