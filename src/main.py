@@ -23,12 +23,12 @@ def getParams(argss):
     elif argv[1] == 'c':
         op = 4
 
-    se = "../input/" + argv[2]
-    infile = "../input/test/" + argv[3]
-    outfile_e = "../output/images/e_" + argv[4] 
-    outfile_d = "../output/images/d_" + argv[4]
-    outfile_c = "../output/images/c_" + argv[4]
-    outfile_o = "../output/images/o_" + argv[4]
+    se = "../input/SE/" + argv[2]
+    infile = "../input/images/" + argv[3]
+    outfile_e = "../output/experiments/e_" + argv[4] 
+    outfile_d = "../output/experiments/d_" + argv[4]
+    outfile_c = "../output/experiments/c_" + argv[4]
+    outfile_o = "../output/experiments/o_" + argv[4]
     return op, se, infile, outfile_e, outfile_d, outfile_c, outfile_o
 
 
@@ -123,7 +123,7 @@ def closing(matrix, se):
 
 def main():
     operation, s, infile, outfile_e, outfile_d, outfile_c, outfile_o = getParams(argv)
-    matrix = plt.imread(infile, 0)
+    matrix = cv2.imread(infile, 0)
     print(matrix)
     se = open(s, "r")
     se_matrix = genMatrix(se)
