@@ -136,6 +136,8 @@ If you were to observe and compare Figure 1 and 2 closely you can see that the b
 
 \newpage
 \large\texbf{Experiment 2: Improving the clarity of handwritten digits} \\ 
+
+Problem: Handwritten digit classification \\
 \begin{figure}[htp]
     \centering
     \includegraphics[width=8cm]{six.png}
@@ -150,6 +152,9 @@ As visible in the image above, the six is a little thick with the white circle i
     \label{fig:erosionAsym}
 \end{figure}\\
 After dilating the image with a structuring element that is a square of size 15 (SE10.txt), we get a sharper six.\\
+
+We chose this structuring element because we saw that the six was formed using square blots. We decided to use a larger structuring element because the image is very pixelated and we wanted to see a clear circle in the center of the six.\\
+
 A possible use case for this would be feature extraction. A classification algorithm could more efficiently extract features that maps the digit as a six.
 
 \newpage
@@ -187,9 +192,32 @@ A possible use case for this would be feature extraction. A classification algor
     \vspace{4ex}
   \end{minipage} 
 \end{figure} \\
+
 For these operations we used a parallelogram structuring element(SE11). We chose this shape for this image as there are a lot of circular structures that we wanted to highlight. There is a lot more contrast in the images that had the operations done on them; helping clearly segment each cellular structure.\\
 
 The dilated image has the clearest segmentation between structures. However, the opened image also shows clear segmentation while not having as jarring of a contrast. \\
+\newpage
 
-
+\large{Experiment 4: Haemoglobin noise filtering and cell filling} \\ 
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=8cm]{redblood.png}
+    \caption{Original image}
+    \label{fig:erosionSym}
+\end{figure}
+\begin{figure}[ht] 
+  \label{ fig7} 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=.97\linewidth]{c_redbloodse4.png} 
+    \caption{Closing} 
+    \vspace{4ex}
+  \end{minipage}%%
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=.97\linewidth]{e_closedredbloodse3.png} 
+    \caption{Erosion of closed image} 
+    \vspace{4ex}
+  \end{minipage} 
+\end{figure} \\
 \end{document}
