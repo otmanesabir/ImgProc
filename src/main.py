@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import cv2
+import os
+import time
 
 
 def getParams(argss):
@@ -25,8 +27,9 @@ def getParams(argss):
     infile = "../input/test/" + argv[3]
     outfile_e = "../output/images/e_" + argv[4] 
     outfile_d = "../output/images/d_" + argv[4]
-
-    return op, se, infile, outfile_e, outfile_d
+    outfile_c = "../output/images/c_" + argv[4]
+    outfile_o = "../output/images/o_" + argv[4]
+    return op, se, infile, outfile_e, outfile_d, outfile_c, outfile_o
 
 
 def genMatrix(file):
@@ -119,18 +122,44 @@ def closing(matrix, se):
 
 
 def main():
-    operation, s, infile, outfile_e, outfile_d = getParams(argv)
+    operation, s, infile, outfile_e, outfile_d, outfile_c, outfile_o = getParams(argv)
     matrix = cv2.imread(infile, 0)
     print(matrix)
     se = open(s, "r")
     se_matrix = genMatrix(se)
-    plt.imsave(outfile_e, np.array(opening(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
-    plt.imsave(outfile_d, np.array(closing(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
+    plt.imsave(outfile_e, np.array(erosion(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
+    plt.imsave(outfile_d, np.array(dilation(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
+    plt.imsave(outfile_o, np.array(opening(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
+    plt.imsave(outfile_c, np.array(closing(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
     # if operation == 1:
     #    np.savetxt(outfile, erosion(matrix, se_matrix), fmt='%i', delimiter=',')
     # else:
     #    np.savetxt(outfile, dilation(matrix, se_matrix), fmt='%i', delimiter=',')
     #
+
+def test():
+    directory = '../input/test/512/'
+    se = open('../input/SE1.txt', 'r')
+    se_matrix = genMatrix(se)
+    for filename in os.listdir(directory):
+        if filename.endswith(".jpg"):
+            infile = os.path.join(directory, filename)
+            print("current photo: " + filename, end=' ')
+            matrix = plt.imread(infile, -1)
+            outfile = '../output/images/test/' + filename
+            # to get execution time only
+            start_time = time.time()
+            erosion(matrix, se_matrix)
+            # plt.imsave(outfile, np.array(erosion(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
+            print(" in " + " %s seconds" % (time.time() - start_time), end=' ')
+            kernel = np.ones((3, 3), np.uint8)
+            start_time = time.time()
+            cv2.erode(matrix, kernel)
+            print("or in " + " %s seconds" % (time.time() - start_time))
+        else:
+            continue
+    se.close()
+
 
 if __name__ == '__main__':
     # test()
