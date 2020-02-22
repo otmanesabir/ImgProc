@@ -123,7 +123,7 @@ def closing(matrix, se):
 
 def main():
     operation, s, infile, outfile_e, outfile_d, outfile_c, outfile_o = getParams(argv)
-    matrix = cv2.imread(infile, 0)
+    matrix = plt.imread(infile, 0)
     print(matrix)
     se = open(s, "r")
     se_matrix = genMatrix(se)
