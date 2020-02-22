@@ -25,10 +25,10 @@ def getParams(argss):
 
     se = "../input/SE/" + argv[2]
     infile = "../input/images/" + argv[3]
-    outfile_e = "../output/experiments/redblood/e_" + argv[4] 
-    outfile_d = "../output/experiments/redblood/d_" + argv[4]
-    outfile_c = "../output/experiments/redblood/c_" + argv[4]
-    outfile_o = "../output/experiments/redblood/o_" + argv[4]
+    outfile_e = "../output/experiments/f3/e_" + argv[4] 
+    outfile_d = "../output/experiments/f3/d_" + argv[4]
+    outfile_c = "../output/experiments/f3/c_" + argv[4]
+    outfile_o = "../output/experiments/f3/o_" + argv[4]
     return op, se, infile, outfile_e, outfile_d, outfile_c, outfile_o
 
 
