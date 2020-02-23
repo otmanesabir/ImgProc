@@ -23,13 +23,10 @@ def getParams(argss):
     elif argv[1] == 'c':
         op = 4
 
-    se = "../input/SE/" + argv[2]
-    infile = "../input/images/" + argv[3]
-    outfile_e = "../output/experiments/j/e_" + argv[4] 
-    outfile_d = "../output/experiments/j/d_" + argv[4]
-    outfile_c = "../output/experiments/j/c_" + argv[4]
-    outfile_o = "../output/experiments/j/o_" + argv[4]
-    return op, se, infile, outfile_e, outfile_d, outfile_c, outfile_o
+    se = "../submission_file/input/" + argv[2]
+    infile = "../submission_file/input/" + argv[3]
+    outfile = "../submission_file/output/" + argv[4]
+    return op, se, infile, outfile
 
 
 def genMatrix(file):
@@ -71,9 +68,7 @@ def min_val(matrix, a, b, se, mini_val):
 
 
 # DILATION USING MAX - BINARY IMAGES
-# The value of the output pixel is the max value of the pixels that are in 
-# neighborhood the size of the SE within the input image.
-# max_val finds the largest element in the sub-matrix
+
 
 def dilation(matrix, se):
     res = np.array(matrix)
@@ -122,45 +117,64 @@ def closing(matrix, se):
 
 
 def main():
-    operation, s, infile, outfile_e, outfile_d, outfile_c, outfile_o = getParams(argv)
-    matrix = cv2.imread(infile, 0)
-    print(matrix)
+    operation, s, infile, outfile = getParams(argv)
+    m_file = open(infile, "r")
+    matrix = genMatrix(m_file)
     se = open(s, "r")
     se_matrix = genMatrix(se)
-    plt.imsave(outfile_e, np.array(erosion(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
-    plt.imsave(outfile_d, np.array(dilation(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
-    plt.imsave(outfile_o, np.array(opening(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
-    plt.imsave(outfile_c, np.array(closing(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
-    # if operation == 1:
-    #    np.savetxt(outfile, erosion(matrix, se_matrix), fmt='%i', delimiter=',')
-    # else:
-    #    np.savetxt(outfile, dilation(matrix, se_matrix), fmt='%i', delimiter=',')
-    #
+    #plt.imsave(outfile_e, np.array(erosion(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
+    #plt.imsave(outfile_d, np.array(dilation(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
+    #plt.imsave(outfile_o, np.array(opening(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
+    #plt.imsave(outfile_c, np.array(closing(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
+    if operation == 1:
+        np.savetxt(outfile, erosion(matrix, se_matrix), fmt='%i', delimiter=',')
+    elif operation == 2:
+        np.savetxt(outfile, dilation(matrix, se_matrix), fmt='%i', delimiter=',')
+    elif operation == 3:
+        np.savetxt(outfile, opening(matrix, se_matrix), fmt='%i', delimiter=',')
+    elif operation == 4:
+        np.savetxt(outfile, closing(matrix, se_matrix), fmt='%i', delimiter=',')
+
 
 def test():
-    directory = '../input/test/512/'
-    se = open('../input/SE1.txt', 'r')
+    directory = '../input/512/'
+    se = open('../input/SE/SE10.txt', 'r')
+    f = open("../time_tests/results_SE10.txt", "w+")
+    my_time = 0.0
+    cv2_time = 0.0
+    count = 0
     se_matrix = genMatrix(se)
     for filename in os.listdir(directory):
         if filename.endswith(".jpg"):
             infile = os.path.join(directory, filename)
-            print("current photo: " + filename, end=' ')
+            #print("current photo: " + filename, end=' ')
             matrix = plt.imread(infile, -1)
             outfile = '../output/images/test/' + filename
             # to get execution time only
             start_time = time.time()
             erosion(matrix, se_matrix)
             # plt.imsave(outfile, np.array(erosion(matrix, se_matrix)).reshape(len(matrix), len(matrix[0])), cmap=cm.gray)
-            print(" in " + " %s seconds" % (time.time() - start_time), end=' ')
+            f.write("%f" % (time.time() - start_time))
+            f.write(",")
+            my_time += (time.time() - start_time)
+            #print(" in " + " %s seconds" % (time.time() - start_time), end=' ')
             kernel = np.ones((3, 3), np.uint8)
             start_time = time.time()
             cv2.erode(matrix, kernel)
-            print("or in " + " %s seconds" % (time.time() - start_time))
+            f.write("%f" % (time.time() - start_time))
+            f.write("\n")
+            cv2_time += (time.time() - start_time)
+            #print("or in " + " %s seconds" % (time.time() - start_time))
         else:
             continue
+        count += 1
+    print("My average is : ", end=' ')
+    print(my_time/count)
+    print("CV2 average is : ", end=' ')
+    print(cv2_time/count)
     se.close()
 
 
 if __name__ == '__main__':
-    # test()
-    main()
+    test()
+    #main()
