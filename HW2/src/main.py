@@ -1,8 +1,8 @@
 import numpy as np
-from PIL import Image
-import cv2
-from matplotlib import pyplot as plt
 from _collections import deque
+import cv2
+from PIL import Image
+import imageio
 
 MASK = -2
 WSHD = 0
@@ -31,7 +31,7 @@ def getNeighbors(height, width, pixel):
     glob[0] = matrix
     glob[1] = matrix2
 
-    return glob.reshape(2, -1).T
+    return glob.reshape(2, -1).T.astype(int)
 
 def getPixels(height, width):
     y_axis = np.zeros((height, width))
@@ -50,24 +50,91 @@ def getPixels(height, width):
 
     return plane.reshape(2, -1).T.astype(int)
 
+def watershed(img):
+    current_label = 0
+    flag = False
+    que = deque()
+    height, width = img.shape
+    total = height * width
+
+    labels = np.full((height, width), INIT, np.int32) # Flat output image matrix, initialized with INIT
+    flat_img = img.reshape(total) # Flattening the image
+    pixels = getPixels(height, width) # Getting [y, x] pairs pairs of image
+    neighbours = np.array([getNeighbors(height, width, p) for p in pixels]) # Getting [y, x] pairs for neighbours of all pixels
+    neighbours = neighbours.reshape(height, width)
+
+    # Sorting pixels direct access
+    idx = np.argsort(flat_img)
+    sorted_img = flat_img[idx]
+    sorted_pixels = pixels[idx]
+
+    # Creating 256 evenly spaced grey value levels
+    lvls = np.linspace(sorted_img[0], sorted_img[-1], LVLS)
+    lvl_idx = []
+    current_lvl = 0
+
+    # Getting indices of pixels that have diff grey value levels
+    for i in range(total):
+        if sorted_img[i] > lvls[current_lvl]:
+            while sorted_img[i] > lvls[current_lvl]: 
+                current_lvl += 1
+            lvl_idx.append(i)
+    lvl_idx.append(total)
+
+    start = 0
+    for stop in lvl_idx:
+
+        # Masking all pixels at current level
+        for pixel in sorted_pixels[start:stop]:
+            labels[pixel[0], pixel[1]] = MASK
+            # Adding the neighbours of existing basins to queue
+            for nbr_pixel in neighbours[pixel[0], pixel[1]]:
+                if labels[nbr_pixel[0],nbr_pixel[1]] >= WSHD:
+                    labels[pixel[0], pixel[1]] = INQUEUE
+                    que.append(pixel)
+                    break
+
+        # Extending basis
+        while que:
+            pixel = que.popleft()
+            for nbr_pixel in neighbours[pixel[0], pixel[1]]:
+                pixel_label = labels[pixel[0], pixel[1]]
+                nbr_label = labels[nbr_pixel[0],nbr_pixel[1]]
+                if nbr_label > 0:
+                    if pixel_label == INQUEUE or (pixel_label == WSHD and flag):
+                        labels[pixel[0], pixel[1]] = nbr_label
+                    elif pixel_label > 0 and pixel_label != nbr_label:
+                        labels[pixel[0], pixel[1]] = WSHD
+                        flag = False
+                elif nbr_label == WSHD:
+                    if pixel_label == INQUEUE:
+                        labels[pixel[0], pixel[1]] = WSHD
+                        flag = True
+                elif nbr_label == MASK:
+                    labels[nbr_pixel[0], nbr_pixel[1]] = INQUEUE
+                    que.append(nbr_pixel)
+
+        # Looking for new minimas
+        for pixel in sorted_pixels[start:stop]:
+            if labels[pixel[0], pixel[1]] == MASK:
+               current_label += 1
+               que.append(pixel)
+               labels[pixel[0], pixel[1]] = current_label
+               while que:
+                  q = que.popleft()
+                  for r in neighbours[q[0], q[1]]:
+                     if labels[r[0], r[1]] == MASK:
+                        que.append(r)
+                        labels[r[0], r[1]] = current_label
+
+        start = stop 
+
+    return labels
          
 
 def main():
-    current_label = 0
-    flag = False
-    fifo = deque()
-    image = np.array(Image.open("../input/ex.png"))
-    height, width = image.shape
-    total = height * width
-    labels = np.full((height, width), INIT, np.int32)
-    reshaped_image = image.reshape(total)
-
-    # [y, x] pairs of pixel coordinates of the flattened image.
-    pixels = getPixels(height, width)
-    # Coordinates of neighbour pixels for each pixel.
-    neighbours = np.array([getNeighbors(height, width, p) for p in pixels])
-    print(pixels)
-
+    img = np.array(Image.open("../input/ex.png"))
+    imageio.imwrite('../output/segmented.png', watershed(img))
 
 if __name__ == "__main__":
     main()
