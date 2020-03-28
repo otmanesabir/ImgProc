@@ -1,0 +1,71 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+% important for graphicx
+\usepackage{graphicx}
+\graphicspath{ {img/} }
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage[]{algorithm2e}
+% background color for definitions
+\usepackage[most]{tcolorbox}
+\tcbset{
+    frame code={}
+    center title,
+    left=0pt,
+    right=0pt,
+    top=0pt,
+    bottom=0pt,
+    colback=blue!6!white,
+    colframe=white,
+    width=\dimexpr\textwidth\relax,
+    enlarge left by=0mm,
+    boxsep=10pt,
+    arc=0pt,outer arc=0pt,
+}
+
+
+\begin{document}
+
+\title{Image Processing II\\
+ Watershed}
+\author{Aadil Anil Kumar \\
+Otmane Sabir
+}
+\date{29/2/2020}
+\maketitle
+\vspace{10mm}
+\begin{center}
+\section*{Introduction}
+\large
+The second homework assignment required us to implement the watershed transform - referring to the geological watershed - while following certain guidelines which could be summarized to the following list: 
+\vspace{7mm}
+\begin{enumerate}
+    \item Implement the watershed algorithm as described as pseudo code from the \hyperref[sec:hello]{\textcolor{blue}{textbook}} 4-connected and 8-connected neighborhood.
+    \item Output a single CSV file for the transformed image in the same format and same definition and value domains as the input image 'f'.
+    \item Do meaningful (motivated from a real-world perspective) watersheds for 3 other images.
+\end{enumerate}
+\end{center}
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Watershed Transform}
+
+\section{Implementation}
+
+
+\section{Experiments & Results}
+
+
+\section{Comparison}
+
+
+\section{Task Distribution}
+
+
+\section{References} 
+\label{sec:hello}
+\end{document}
