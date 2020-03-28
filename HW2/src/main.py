@@ -34,15 +34,15 @@ def getNeighbors(height, width, pixel):
     return glob.reshape(2, -1).T
 
 def getPixels(height, width):
-    y_axis = np.zeros(shape=(height, width))
-    for i in range(height):
-        row = np.full((1, width), i)
-        y_axis[i] = row
-
-    x_axis = np.zeros(shape=(height, width))
-    row = np.arange(0, height + 1) 
+    y_axis = np.zeros((height, width))
     for j in range(height):
-        x_axis[j] = row
+        row = np.full((1, width), j)
+        y_axis[j] = row
+
+    x_axis = np.zeros((height, width))
+    row = np.arange(0, height + 1) 
+    for i in range(height):
+        x_axis[i] = row
         
     plane = np.zeros((2, height, width))
     plane[0] = y_axis
@@ -66,6 +66,7 @@ def main():
     pixels = getPixels(height, width)
     # Coordinates of neighbour pixels for each pixel.
     neighbours = np.array([getNeighbors(height, width, p) for p in pixels])
+    print(pixels)
 
 
 if __name__ == "__main__":
