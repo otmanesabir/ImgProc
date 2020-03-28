@@ -1,7 +1,8 @@
 # Default ignored files
-/workspace.xml
-
+.idea/
 .DS_Store
+.vscode/
+src/.ipynb_checkpoints/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
