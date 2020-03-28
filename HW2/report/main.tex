@@ -100,6 +100,32 @@ So the watershed transform of $f$ assigns labels to the points of $D$, such that
 In our implementation, we're relying on the simulated immersion approach introduced by Vincent \& Soille \cite{soilletextbook}. \newline\newline
 Metaphorically speaking, the algorithm pierces holes in every minimum, and the entire relief begins to be flooded with water. Starting from the minimum of lowest height, the water gradually fills up all catchment basins. Watersheds are built in the places where water from different basins unites. The process ends when the water reaches the maximum peak of the relief, and as a result, every catchment basin gets covered by the watershed lines which are easily distinguishable lines from the rest of the output.
 \subsection{Formal Definition}
+\begin{tcolorbox}
+\textsc{Defition 2:} \cite{parwshed} \newline\newline
+Let $f : D \to \N$ be a digital grey value image, with $h_{min}$ and $h_{max}$ the minimum and maximum value of $f$. Define a recursion with the grey level $h$ increasing from $h_{min}$ to $h_{max}$, in which the basins associated with the minima of f are successively expanded. Let $X_h$ denote the union of the set of basins computed at level $h$. A connected component to the threshold set $T_{h + 1}$ at level $h + 1$ can be either a new minimum, or an extension of a basin in $X_h$: in the latter case one computes the geodesic influence zone of $X_h$ within $T_{h+1}$, resulting in an update $X_{h+1}$. Let $MIN_h$ denote the union of all regional minima at altitude h.\newline\newline
+Let us now define the following recursion: \newline
+\[
+\begin{cases}
+    X_{h_{min}} = & \{p \in D | f(p) = T_{h_{min}}\}\\
+    X_{h+1} = & MIN_{h+1} \cup IZ_{T_{h+1}}\left(X_h\right), h \in [h_{min}, h_{max})
+\end{cases}
+\]
+\newline\newline
+The watershed $Wshed(f)$ of $f$ is the complement of $X_{h_{max}}$ in $D$ : 
+\begin{center}
+    $Wshed(f) = D \textbackslash X_{h{max}}$
+\end{center}
+\end{tcolorbox}
+\vspace{2mm}
+Let's use Figure \ref{fig:example_1} from \cite{parwshed} as an example of the algorithm defined above. Assuming that A and B are basin labels and that W is the watershed pixels. Then the algorithm will proceed as shown in the figure (a) is the original image and the (b-e) are steps following the algorithm definition above.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{example1.png}
+    \caption{Immersion algorithm on the 4-connected grid}
+    \label{fig:example_1}
+\end{figure}
+
 \subsection{Implementation}
 \subsubsection{Pixel Mapping}
 \subsubsection{Neighbouring Pixels}
