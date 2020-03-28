@@ -34,21 +34,21 @@ def getNeighbors(height, width, pixel):
     return glob.reshape(2, -1).T
 
 def getPixels(height, width):
-    y_plane = np.zeros(shape=(height, width))
+    y_axis = np.zeros(shape=(height, width))
     for i in range(height):
         row = np.full((1, width), i)
-        y_plane[i] = row
+        y_axis[i] = row
 
-    x_plane = np.zeros(shape=(height, width))
+    x_axis = np.zeros(shape=(height, width))
     row = np.arange(0, height + 1) 
     for j in range(height):
-        x_plane[j] = row
+        x_axis[j] = row
         
-    cartesian = np.zeros((2, height, width))
-    cartesian[0] = y_plane
-    cartesian[1] = x_plane
+    plane = np.zeros((2, height, width))
+    plane[0] = y_axis
+    plane[1] = x_axis
 
-    return cartesian.reshape(2, -1).T.astype(int)
+    return plane.reshape(2, -1).T.astype(int)
 
          
 
@@ -61,7 +61,7 @@ def main():
     total = height * width
     labels = np.full((height, width), INIT, np.int32)
     reshaped_image = image.reshape(total)
-    
+
     # [y, x] pairs of pixel coordinates of the flattened image.
     pixels = getPixels(height, width)
     # Coordinates of neighbour pixels for each pixel.
