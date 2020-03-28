@@ -3,6 +3,7 @@
 % important for graphicx
 \usepackage{graphicx}
 \graphicspath{ {img/} }
+\usepackage[style=numeric,language=english,sorting=none]{biblatex}
 \usepackage{float}
 \usepackage{hyperref}
 \usepackage{enumitem}
@@ -23,7 +24,14 @@
     boxsep=10pt,
     arc=0pt,outer arc=0pt,
 }
+\hypersetup{
+  linktocpage,
+  colorlinks = {true},
+  linkcolor = {blue},
+  citecolor = {cyan}
+}
 
+\addbibresource{References.bib}
 
 \begin{document}
 
@@ -41,8 +49,8 @@ Otmane Sabir
 The second homework assignment required us to implement the watershed transform - referring to the geological watershed - while following certain guidelines which could be summarized to the following list: 
 \vspace{7mm}
 \begin{enumerate}
-    \item Implement the watershed algorithm as described as pseudo code from the \hyperref[sec:hello]{\textcolor{blue}{textbook}} 4-connected and 8-connected neighborhood.
-    \item Output a single CSV file for the transformed image in the same format and same definition and value domains as the input image 'f'.
+    \item Implement the watershed algorithm as described in pseudo code from the textbook \cite{soille2013morphological}, for 4-connected and 8-connected neighborhoods.
+    \item Output a single CSV file for the transformed image in the using the same format, definition and value domains as the input image 'f'.
     \item Do meaningful (motivated from a real-world perspective) watersheds for 3 other images.
 \end{enumerate}
 \end{center}
@@ -54,10 +62,11 @@ The second homework assignment required us to implement the watershed transform 
 
 \section{Watershed Transform}
 
+
 \section{Implementation}
 
 
-\section{Experiments & Results}
+\section{Experiments \& Results}
 
 
 \section{Comparison}
@@ -65,7 +74,7 @@ The second homework assignment required us to implement the watershed transform 
 
 \section{Task Distribution}
 
-
-\section{References} 
-\label{sec:hello}
+\newpage
+\nocite{*}
+\printbibliography
 \end{document}
