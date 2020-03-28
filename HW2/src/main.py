@@ -10,7 +10,6 @@ INIT = -1
 INQUEUE = -3
 LVLS = 256
 
-
 def getNeighbors(height, width, pixel):
     i = max(0, pixel[0] - 1)
     j = min(height, pixel[0] + 2)
@@ -22,6 +21,7 @@ def getNeighbors(height, width, pixel):
     for t in range(j - i):
         temp = np.full((1, (y - x)), t + i)
         matrix[t] = temp
+
     temp = np.arange(x, y)
     matrix2 = np.zeros(shape=(j - i, y - x))
     for t in range(y - x):
@@ -30,6 +30,27 @@ def getNeighbors(height, width, pixel):
     glob = np.zeros((2, j - i, y - x))
     glob[0] = matrix
     glob[1] = matrix2
+
+    return glob.reshape(2, -1).T
+
+def getPixels(height, width):
+    y_plane = np.zeros(shape=(height, width))
+    for i in range(height):
+        row = np.full((1, width), i)
+        y_plane[i] = row
+
+    x_plane = np.zeros(shape=(height, width))
+    row = np.arange(0, height + 1) 
+    for j in range(height):
+        x_plane[j] = row
+        
+    cartesian = np.zeros((2, height, width))
+    cartesian[0] = y_plane
+    cartesian[1] = x_plane
+
+    return cartesian.reshape(2, -1).T.astype(int)
+
+         
 
 def main():
     current_label = 0
@@ -40,8 +61,9 @@ def main():
     total = height * width
     labels = np.full((height, width), INIT, np.int32)
     reshaped_image = image.reshape(total)
+    
     # [y, x] pairs of pixel coordinates of the flattened image.
-    pixels = np.mgrid[0:height, 0:width].reshape(2, -1).T
+    pixels = getPixels(height, width)
     # Coordinates of neighbour pixels for each pixel.
     neighbours = np.array([getNeighbors(height, width, p) for p in pixels])
 
