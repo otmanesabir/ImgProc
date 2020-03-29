@@ -210,9 +210,12 @@ def main():
             imageio.imwrite(outfile4, watershed(img, 4))
             imageio.imwrite(outfile8, watershed(img, 8))
     else:
-        print("Input: Image")
-        image = np.array(Image.open(infile))
-        img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        img = np.array(Image.open(infile))
+        if (len(img.shape) > 2):
+            print("Input: RGB Image, Converting to Grayscale")
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        else:
+            print("Input: GS Image")
         imageio.imwrite(outfile4, watershed(img, 4))
         imageio.imwrite(outfile8, watershed(img, 8))
 
