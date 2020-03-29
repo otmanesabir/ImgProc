@@ -12,10 +12,22 @@ INIT = -1
 INQUEUE = -3
 LVLS = 256
 
+def getParamsExperiments(argss):
+    op = False
+    if len(argss) < 4 or int(argv[2]) not in (1, 0):
+        print("usage: <input file> <1 or 0 distanced> <output file.png/jpg>")
+        exit()
+    if argv[1].endswith(".txt"):op = True
+    distanced = argv[2]
+    infile = "../input/" + argv[1]
+    outfile4 = "../output/4_" + argv[3]
+    outfile8 = "../output/8_" + argv[3]
+    return op, int(distanced), infile, outfile4, outfile8
+
 def getParams(argss):
     op = False
     if len(argss) < 4 or int(argv[1]) not in (4, 8):
-        print("usage: <input file> <4 or 8 neighbours> <output file>")
+        print("usage: <input file> <4 or 8 neighbours> <output file.png/jpg>")
         exit()
     if argv[2].endswith(".txt"):op = True
     neighbours = argv[1]
@@ -27,8 +39,14 @@ def distanceTransform(filename):
     with open(filename, 'r') as f:
         l = [[int(num) for num in line.split(',')] for line in f]
     img = ndimage.distance_transform_edt(l)
-    imageio.imwrite('./distanced.png', img)
+    imageio.imwrite('./temp_distanced.png', img)
     return img
+
+def genMatrix(filename):
+    with open(filename, 'r') as f:
+        l = [[int(num) for num in line.split(',')] for line in f]
+    imageio.imwrite('./temp.png', l)
+    return l
 
 def getNeighbors(height, width, pixel, n):
     i = max(0, pixel[0] - 1)
@@ -158,14 +176,25 @@ def watershed(img, n):
 
 
 def main():
-    textfile, n, infile, outfile = getParams(argv)
+    textfile, d, infile, outfile4, outfile8 = getParamsExperiments(argv)
     if textfile:
-        distanceTransform(infile)
-        img = np.array(Image.open("./distanced.png"))
-        imageio.imwrite(outfile, watershed(img, n))
+        if d:
+            print("Textfile, Distance Transform Required")
+            distanceTransform(infile)
+            img = np.array(Image.open("./temp_distanced.png"))
+            imageio.imwrite(outfile4, watershed(img, 4))
+            imageio.imwrite(outfile8, watershed(img, 8))
+        else:
+            print("Textfile, No Distance Transform")
+            genMatrix(infile)
+            img = np.array(Image.open("./temp.png"))
+            imageio.imwrite(outfile4, watershed(img, 4))
+            imageio.imwrite(outfile8, watershed(img, 8))
     else:
+        print("Image")
         img = np.array(Image.open(infile))
-        imageio.imwrite(outfile, watershed(img, n))
+        imageio.imwrite(outfile4, watershed(img, 4))
+        imageio.imwrite(outfile8, watershed(img, 8))
 
 
 if __name__ == "__main__":
