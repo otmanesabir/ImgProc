@@ -1,8 +1,10 @@
+from sys import argv
 import numpy as np
 from _collections import deque
 import cv2
 from PIL import Image
 import imageio
+from scipy import ndimage
 
 MASK = -2
 WSHD = 0
@@ -10,12 +12,30 @@ INIT = -1
 INQUEUE = -3
 LVLS = 256
 
-def getNeighbors(height, width, pixel):
+def getParams(argss):
+    op = False
+    if len(argss) < 4 or int(argv[1]) not in (4, 8):
+        print("usage: <input file> <4 or 8 neighbours> <output file>")
+        exit()
+    if argv[2].endswith(".txt"):op = True
+    neighbours = argv[1]
+    infile = "../input/" + argv[2]
+    outfile = "../output/" + argv[3]
+    return op, int(neighbours), infile, outfile
+
+def distanceTransform(filename):
+    with open(filename, 'r') as f:
+        l = [[int(num) for num in line.split(',')] for line in f]
+    img = ndimage.distance_transform_edt(l)
+    imageio.imwrite('./distanced.png', img)
+    return img
+
+def getNeighbors(height, width, pixel, n):
     i = max(0, pixel[0] - 1)
-    j = min(height, pixel[0] + 2)
+    j = min(height, pixel[0] + int(n / 4))
 
     x = max(0, pixel[1] - 1)
-    y = min(width, pixel[1] + 2)
+    y = min(width, pixel[1] + int(n / 4))
 
     matrix = np.zeros(shape=(j - i, y - x))
     for t in range(j - i):
@@ -40,17 +60,22 @@ def getPixels(height, width):
         y_axis[j] = row
 
     x_axis = np.zeros((height, width))
-    row = np.arange(0, height + 1) 
-    for i in range(height):
-        x_axis[i] = row
-        
+    try:
+        row = np.arange(0, height) 
+        for i in range(height):
+            x_axis[i] = row
+    except:
+        row = np.arange(0, height + 1) 
+        for i in range(height):
+            x_axis[i] = row 
+
     plane = np.zeros((2, height, width))
     plane[0] = y_axis
     plane[1] = x_axis
 
     return plane.reshape(2, -1).T.astype(int)
 
-def watershed(img):
+def watershed(img, n):
     current_label = 0
     flag = False
     que = deque()
@@ -60,7 +85,7 @@ def watershed(img):
     labels = np.full((height, width), INIT, np.int32) # Flat output image matrix, initialized with INIT
     flat_img = img.reshape(total) # Flattening the image
     pixels = getPixels(height, width) # Getting [y, x] pairs pairs of image
-    neighbours = np.array([getNeighbors(height, width, p) for p in pixels]) # Getting [y, x] pairs for neighbours of all pixels
+    neighbours = np.array([getNeighbors(height, width, p, n) for p in pixels]) # Getting [y, x] pairs for neighbours of all pixels
     neighbours = neighbours.reshape(height, width)
 
     # Sorting pixels direct access
@@ -130,11 +155,18 @@ def watershed(img):
         start = stop 
 
     return labels
-         
+
 
 def main():
-    img = np.array(Image.open("../input/ex.png"))
-    imageio.imwrite('../output/segmented.png', watershed(img))
+    textfile, n, infile, outfile = getParams(argv)
+    if textfile:
+        distanceTransform(infile)
+        img = np.array(Image.open("./distanced.png"))
+        imageio.imwrite(outfile, watershed(img, n))
+    else:
+        img = np.array(Image.open(infile))
+        imageio.imwrite(outfile, watershed(img, n))
+
 
 if __name__ == "__main__":
     main()
