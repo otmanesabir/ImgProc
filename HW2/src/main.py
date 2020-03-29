@@ -5,6 +5,7 @@ import cv2
 from PIL import Image
 import imageio
 from scipy import ndimage
+from progressbar import ProgressBar
 
 MASK = -2
 WSHD = 0
@@ -83,10 +84,15 @@ def getPixels(height, width):
         for i in range(height):
             x_axis[i] = row
     except:
-        row = np.arange(0, height + 1) 
-        for i in range(height):
-            x_axis[i] = row 
-
+        try:
+            row = np.arange(0, height + 1) 
+            for i in range(height):
+                x_axis[i] = row
+        except:
+            row = np.arange(0, width)
+            for i in range(height):
+                x_axis[i] = row
+        
     plane = np.zeros((2, height, width))
     plane[0] = y_axis
     plane[1] = x_axis
@@ -94,16 +100,28 @@ def getPixels(height, width):
     return plane.reshape(2, -1).T.astype(int)
 
 def watershed(img, n):
+    pbar1 = ProgressBar()
+    pbar2 = ProgressBar()
     current_label = 0
     flag = False
     que = deque()
-    height, width = img.shape
-    total = height * width
+    try:
+        height, width = img.shape
+        total = height * width
+    except:
+        try:
+            img.transpose(2,0,1).reshape(3,-1)
+            height, width = img.shape
+            total = height * width
+        except:
+            print("Image format not supported")
+            exit()
 
     labels = np.full((height, width), INIT, np.int32) # Flat output image matrix, initialized with INIT
     flat_img = img.reshape(total) # Flattening the image
     pixels = getPixels(height, width) # Getting [y, x] pairs pairs of image
-    neighbours = np.array([getNeighbors(height, width, p, n) for p in pixels]) # Getting [y, x] pairs for neighbours of all pixels
+    print("Getting {} Neighbours...".format(n))
+    neighbours = np.array([getNeighbors(height, width, p, n) for p in pbar1(pixels)]) # Getting [y, x] pairs for neighbours of all pixels
     neighbours = neighbours.reshape(height, width)
 
     # Sorting pixels direct access
@@ -124,8 +142,9 @@ def watershed(img, n):
             lvl_idx.append(i)
     lvl_idx.append(total)
 
+    print("Creating Segmented Image...")
     start = 0
-    for stop in lvl_idx:
+    for stop in pbar2(lvl_idx):
 
         # Masking all pixels at current level
         for pixel in sorted_pixels[start:stop]:
@@ -179,23 +198,23 @@ def main():
     textfile, d, infile, outfile4, outfile8 = getParamsExperiments(argv)
     if textfile:
         if d:
-            print("Textfile, Distance Transform Required")
+            print("Input: Textfile, Distance Transform Required")
             distanceTransform(infile)
             img = np.array(Image.open("./temp_distanced.png"))
             imageio.imwrite(outfile4, watershed(img, 4))
             imageio.imwrite(outfile8, watershed(img, 8))
         else:
-            print("Textfile, No Distance Transform")
+            print("Input: Textfile, No Distance Transform")
             genMatrix(infile)
             img = np.array(Image.open("./temp.png"))
             imageio.imwrite(outfile4, watershed(img, 4))
             imageio.imwrite(outfile8, watershed(img, 8))
     else:
-        print("Image")
-        img = np.array(Image.open(infile))
+        print("Input: Image")
+        image = np.array(Image.open(infile))
+        img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         imageio.imwrite(outfile4, watershed(img, 4))
         imageio.imwrite(outfile8, watershed(img, 8))
-
 
 if __name__ == "__main__":
     main()
