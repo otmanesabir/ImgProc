@@ -136,8 +136,16 @@ class Watershed(object):
 
         return labels
 
+def bestFit(x, y):
+    z = np.polyfit(x, y, 3)
+    f = np.poly1d(z)
+    x_new = np.linspace(x[0], x[-1], 50)
+    y_new = f(x_new)
+    plt.plot(x, y, 'o', x_new, y_new)
+    plt.xlim([x[0] - 1, x[-1] + 1])
+    plt.show()
 
-if __name__ == "__main__":
+def test_img():
     w = Watershed()
     d = "../tests/"
     x = []
@@ -149,9 +157,30 @@ if __name__ == "__main__":
             if image.ndim != 2: continue
             x.append(image.size)
             start = timeit.default_timer()
-            labels = w.apply(image)
+            w.apply(image)
             stop = timeit.default_timer()
             y.append(float(stop - start))
     # FIND BEST FIT LINE
-    plt.scatter(x, y)
-    plt.show()
+    bestFit(x, y)
+
+
+def test_mtr():
+    w = Watershed()
+    x = []
+    y = []
+    i = 1
+    for _ in tqdm(range(100), desc="Watershed PT"):
+        image = np.round(np.random.rand(i * 10, i * 10) * 255)
+        w.apply(image)
+        x.append(image.size)
+        start = timeit.default_timer()
+        w.apply(image)
+        stop = timeit.default_timer()
+        y.append(float(stop - start))
+        i += 1
+    bestFit(x, y)
+
+
+if __name__ == "__main__":
+    #test_img()
+    test_mtr()
