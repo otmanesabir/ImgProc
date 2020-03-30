@@ -1,10 +1,14 @@
 import numpy as np
 from collections import deque
-import cv2
 import os
 import timeit
 from PIL import Image
 import matplotlib.pyplot as plt
+import sys
+from tqdm import tqdm
+
+from ipython_genutils.py3compat import xrange
+
 
 class Watershed(object):
     MASK = -2
@@ -138,12 +142,11 @@ if __name__ == "__main__":
     d = "../tests/"
     x = []
     y = []
-    for path in os.listdir(d):
+    for path in tqdm(os.listdir(d), desc="Watershed PT"):
         if path.endswith(".jpg"):
             full_path = os.path.join(d, path)
-            print("Accessed :", full_path)
             image = np.array(Image.open(full_path))
-            if image.ndim != 2 : continue
+            if image.ndim != 2: continue
             x.append(image.size)
             start = timeit.default_timer()
             labels = w.apply(image)
@@ -152,4 +155,3 @@ if __name__ == "__main__":
     # FIND BEST FIT LINE
     plt.scatter(x, y)
     plt.show()
-
