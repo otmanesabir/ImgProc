@@ -6,7 +6,8 @@
 \usepackage{float}
 \usepackage{hyperref}
 \usepackage{enumitem}
-\usepackage[]{algorithm2e}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
 % background color for definitions
 \usepackage[most]{tcolorbox}
 \tcbset{
@@ -55,7 +56,7 @@ The second homework assignment required us to implement the watershed transform 
 \section{Watershed Transform}
 \vspace{2mm}
 \begin{flushleft}
-The watershed transform is a classical segmentation - separating different objects in an image - algorithm in the world of image processing; it initially derives from the the geological watershed which means the elevated terrain that separates neighboring drainage basins. The watershed transform segmentation follows the same logic: starting from defined markers, the watershed algorithm treats pixels values as a local topography (elevation). The algorithm floods basins from the markers until basins attributed to different markers meet on watershed lines. \textif{See Figure \ref{fig:watershed_visualization}}\newline
+The watershed transform is a classical segmentation - separating different objects in an image - algorithm in the world of image processing; it initially derives from the the geological watershed which means the elevated terrain that separates neighboring drainage basins. The watershed transform segmentation follows the same logic: starting from defined markers, the watershed algorithm treats pixels values as a local topography (elevation). The algorithm floods basins from the markers until basins attributed to different markers meet on watershed lines. \textit{See Figure \ref{fig:watershed_visualization}}\newline
 \vspace{2mm}
 \end{flushleft}
 \begin{figure}[ht]
@@ -71,9 +72,6 @@ The watershed transform is a classical segmentation - separating different objec
 \textsc{Definition: }\cite{parwshed} \newline\newline
 
 Let $f \in C(D)$ have $minima$ $\{m_{k}\}_{k \in I}$, for some index set $I$. The catchment basin $CB(m_i)$ of a minimum $m_i$ is defined as the set of points $x \in D$ which are topographically closer to $m_i$ than to any other regional minimum $m_j$:
-
-\newline
-
 \begin{center}
 \begin{equation*}
     CB(m_i) = \{x \in D | \forall j \textbackslash \in I\{i\} : f(m_i) + T_f(x, m_i) < f(m_j) + T_f(x, m_j)\}
@@ -96,12 +94,11 @@ So the watershed transform of $f$ assigns labels to the points of $D$, such that
 
 
 \section{Algorithmic Definition}
-\vspace{2mm}
-In our implementation, we're relying on the simulated immersion approach introduced by Vincent \& Soille \cite{soilletextbook}. \newline\newline
+\vspace{2mm}In our implementation, we're relying on the simulated immersion approach introduced by Vincent \& Soille \cite{soilletextbook}. \newline\newline
 Metaphorically speaking, the algorithm pierces holes in every minimum, and the entire relief begins to be flooded with water. Starting from the minimum of lowest height, the water gradually fills up all catchment basins. Watersheds are built in the places where water from different basins unites. The process ends when the water reaches the maximum peak of the relief, and as a result, every catchment basin gets covered by the watershed lines which are easily distinguishable lines from the rest of the output.
 \subsection{Formal Definition}
 \begin{tcolorbox}
-\textsc{Defition 2:} \cite{parwshed} \newline\newline
+\textsc{Definition 2:} \cite{parwshed} \newline\newline
 Let $f : D \to \N$ be a digital grey value image, with $h_{min}$ and $h_{max}$ the minimum and maximum value of $f$. Define a recursion with the grey level $h$ increasing from $h_{min}$ to $h_{max}$, in which the basins associated with the minima of f are successively expanded. Let $X_h$ denote the union of the set of basins computed at level $h$. A connected component to the threshold set $T_{h + 1}$ at level $h + 1$ can be either a new minimum, or an extension of a basin in $X_h$: in the latter case one computes the geodesic influence zone of $X_h$ within $T_{h+1}$, resulting in an update $X_{h+1}$. Let $MIN_h$ denote the union of all regional minima at altitude h.\newline\newline
 Let us now define the following recursion: \newline
 \[
@@ -117,7 +114,9 @@ The watershed $Wshed(f)$ of $f$ is the complement of $X_{h_{max}}$ in $D$ :
 \end{center}
 \end{tcolorbox}
 \vspace{2mm}
+\begin{flushleft}
 Let's use Figure \ref{fig:example_1} from \cite{parwshed} as an example of the algorithm defined above. Assuming that A and B are basin labels and that W is the watershed pixels. Then the algorithm will proceed as shown in the figure (a) is the original image and the (b-e) are steps following the algorithm definition above.
+\end{flushleft}
 
 \begin{figure}[H]
     \centering
@@ -127,6 +126,33 @@ Let's use Figure \ref{fig:example_1} from \cite{parwshed} as an example of the a
 \end{figure}
 
 \subsection{Implementation}
+As we previously discussed, we attempted to implement the immersion approach. The pseudo code below was provided by Soille \cite{soilletestbook}.
+\newline
+
+\begin{algorithm}
+\caption{Watershed using flooding simulations}\label{euclid}
+\begin{algorithmic}[1]
+\Procedure{watershed}{}
+\State $\textit{mask} \gets \text{-2  ;  }  \textit{initial value of a threshold level}$
+\State $\textit{wshed} \gets \text{0  ;  }  \textit{value of pixels belonging to watersheds}$
+\State $\textit{inqueue} \gets \text{-3  ;  } \textit{value assigned to pixels put into the queue}$
+\BState \emph{top}:
+\If {$i > \textit{stringlen}$} \Return false
+\EndIf
+\State $j \gets \textit{patlen}$
+\BState \emph{loop}:
+\If {$\textit{string}(i) = \textit{path}(j)$}
+\State $j \gets j-1$.
+\State $i \gets i-1$.
+\State \textbf{goto} \emph{loop}.
+\State \textbf{close};
+\EndIf
+\State $i \gets i+\max(\textit{delta}_1(\textit{string}(i)),\textit{delta}_2(j))$.
+\State \textbf{goto} \emph{top}.
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
 \subsubsection{Pixel Mapping}
 \subsubsection{Neighbouring Pixels}
 \subsubsection{Queue Data Structure}

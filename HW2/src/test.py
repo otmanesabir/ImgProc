@@ -164,7 +164,7 @@ def test_img():
     bestFit(x, y)
 
 
-def test_mtr():
+def test_rnd():
     w = Watershed()
     x = []
     y = []
@@ -183,4 +183,4 @@ def test_mtr():
 
 if __name__ == "__main__":
     #test_img()
-    test_mtr()
+    test_rnd()
