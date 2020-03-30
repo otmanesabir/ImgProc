@@ -1,6 +1,6 @@
 # Default ignored files
 .idea/
-.DS_Store
+*.DS_Store
 .vscode/
 src/.ipynb_checkpoints/
 
