@@ -14,7 +14,7 @@ File structure and hierarchy goes here.
 * ~Create pixel function~
 * ~Create test function~
 * Generate results and tests
-  * ~ Generate output for the inverse of the distance transform 'f1_dinv.txt' derived from a blob image ~
+  * ~Generate output for the inverse of the distance transform 'f1_dinv.txt' derived from a blob image~
   * Generate output for the circle image (f2.txt). For this image, explain the differences between the 4 and 8 connected neighborhood implementations.
     * ~Generate output circle~
     * ~Explain difference in report~
