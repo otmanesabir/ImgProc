@@ -1,12 +1,9 @@
 import numpy as np
-from collections import deque
-import os
 import timeit
-from PIL import Image
 import matplotlib.pyplot as plt
-import sys
+import threading
 from tqdm import tqdm
-
+from collections import deque
 from ipython_genutils.py3compat import xrange
 
 
@@ -136,6 +133,7 @@ class Watershed(object):
 
         return labels
 
+
 def makePlot(x, y):
     # Scatter Plot
     # Best fit line
@@ -151,25 +149,49 @@ def makePlot(x, y):
     plt.legend()
     plt.show()
 
-def test_img():
+def test_single(i):
     w = Watershed()
-    d = "../tests/"
-    x = []
-    y = []
-    for path in tqdm(os.listdir(d), desc="Watershed PT"):
-        if path.endswith(".jpg"):
-            full_path = os.path.join(d, path)
-            image = np.array(Image.open(full_path))
-            if image.ndim != 2: continue
-            x.append(image.size)
-            start = timeit.default_timer()
-            w.apply(image)
-            stop = timeit.default_timer()
-            y.append(float(stop - start))
-    # FIND BEST FIT LINE
-    makePlot(x, y)
+    image = np.round(np.random.rand(i, i) * 255)
+    height, width = image.shape
+    start = timeit.default_timer()
+    w.apply(image)
+    stop = timeit.default_timer()
+    x.append([height*width, stop - start])
+    return
+
+# KEEP THIS GLOBAL
+x = [[]]
+
+# MULTI THREADING TEST (FASTER)
+
+def test_mtt():
+    i = 1
+    threads = []
+    for _ in tqdm(range(500), desc="creating threads"):
+        t = threading.Thread(target=test_single, args=(i,))
+        threads.append(t)
+        i += 1
+
+    for a in tqdm(threads, desc="Starting Threads"):
+        a.start()
+
+    for a in tqdm(threads, desc="Joining threads"):
+        a.join()
+
+    new_x = []
+    new_y = []
+    for temp in x:
+        i = 0
+        for coord in temp:
+            if i == 0:
+                new_x.append(coord)
+                i += 1
+            else:
+                new_y.append(coord)
+    makePlot(new_x, new_y)
 
 
+# RANDOM SIMPLE TEST
 def test_rnd():
     w = Watershed()
     x = []
@@ -187,6 +209,8 @@ def test_rnd():
 
 
 if __name__ == "__main__":
+    test_mtt()
     #test_img()
-    test_rnd()
+    #test_rnd()
+
 
