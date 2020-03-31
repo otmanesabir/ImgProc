@@ -23,11 +23,11 @@ class Watershed(object):
     def _get_neighbors(self, height, width, pixel):
         # MATRIX HEIGHT
         i = max(0, pixel[0] - 1)
-        j = min(height, pixel[0] + 2)
+        j = min(height, pixel[0] + 1)
 
         # MATRIX WIDTH
         x = max(0, pixel[1] - 1)
-        y = min(width, pixel[1] + 2)
+        y = min(width, pixel[1] + 1)
         # x = 2
         # y = 5
 
@@ -136,13 +136,19 @@ class Watershed(object):
 
         return labels
 
-def bestFit(x, y):
+def makePlot(x, y):
+    # Scatter Plot
+    # Best fit line
     z = np.polyfit(x, y, 3)
     f = np.poly1d(z)
     x_new = np.linspace(x[0], x[-1], 50)
     y_new = f(x_new)
-    plt.plot(x, y, 'o', x_new, y_new)
+    plt.plot(x, y, 'r+', label="Scatter", markersize=5)
+    plt.plot(x_new, y_new, label="Best Fit", linewidth=2)
     plt.xlim([x[0] - 1, x[-1] + 1])
+    plt.xlabel('Image [PIXELS]', fontsize=12)
+    plt.ylabel('Time [S]', fontsize=12)
+    plt.legend()
     plt.show()
 
 def test_img():
@@ -161,7 +167,7 @@ def test_img():
             stop = timeit.default_timer()
             y.append(float(stop - start))
     # FIND BEST FIT LINE
-    bestFit(x, y)
+    makePlot(x, y)
 
 
 def test_rnd():
@@ -169,18 +175,18 @@ def test_rnd():
     x = []
     y = []
     i = 1
-    for _ in tqdm(range(100), desc="Watershed PT"):
-        image = np.round(np.random.rand(i * 10, i * 10) * 255)
-        w.apply(image)
+    for _ in tqdm(range(1000), desc="Watershed PT"):
+        image = np.round(np.random.rand(i, i) * 255)
         x.append(image.size)
         start = timeit.default_timer()
         w.apply(image)
         stop = timeit.default_timer()
         y.append(float(stop - start))
         i += 1
-    bestFit(x, y)
+    makePlot(x, y)
 
 
 if __name__ == "__main__":
     #test_img()
     test_rnd()
+
