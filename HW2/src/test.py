@@ -144,6 +144,7 @@ def makePlot(x, y):
     plt.plot(x, y, 'r+', label="Scatter", markersize=5)
     plt.plot(x_new, y_new, label="Best Fit", linewidth=2)
     plt.xlim([x[0] - 1, x[-1] + 1])
+    plt.ylim(0, 320)
     plt.xlabel('Image [PIXELS]', fontsize=12)
     plt.ylabel('Time [S]', fontsize=12)
     plt.legend()
@@ -167,7 +168,7 @@ x = [[]]
 def test_mtt():
     i = 1
     threads = []
-    for _ in tqdm(range(500), desc="creating threads"):
+    for _ in tqdm(range(1000), desc="creating threads"):
         t = threading.Thread(target=test_single, args=(i,))
         threads.append(t)
         i += 1
@@ -209,8 +210,8 @@ def test_rnd():
 
 
 if __name__ == "__main__":
-    test_mtt()
+    #test_mtt()
     #test_img()
-    #test_rnd()
+    test_rnd()
 
 
