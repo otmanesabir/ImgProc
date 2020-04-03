@@ -2,11 +2,14 @@
 \usepackage[utf8]{inputenc}
 % important for graphicx
 \usepackage{graphicx}
-\graphicspath{ {img/} }
+\graphicspath{ {img/}{src/} }
 \usepackage{float}
 \usepackage{hyperref}
 \usepackage{enumitem}
 \usepackage{algorithm}
+\usepackage{subcaption}
+\usepackage[mathscr]{euscript}
+\usepackage[detect-all]{siunitx}
 \usepackage[noend]{algpseudocode}
 % background color for definitions
 \usepackage[most]{tcolorbox}
@@ -25,6 +28,17 @@
     arc=0pt,outer arc=0pt,
 }
 
+
+\newenvironment{changemargin}[2]{%
+\begin{list}{}{%
+\setlength{\topsep}{0pt}%
+\setlength{\leftmargin}{#1}%
+\setlength{\rightmargin}{#2}%
+\setlength{\listparindent}{\parindent}%
+\setlength{\itemindent}{\parindent}%
+\setlength{\parsep}{\parskip}%
+}%
+\item[]}{\end{list}}
 
 \begin{document}
 
@@ -69,8 +83,7 @@ The watershed transform is a classical segmentation - separating different objec
 \begin{flushleft}
 \vspace{2mm }
 \begin{tcolorbox}
-\textsc{Definition: }\cite{parwshed} \newline\newline
-
+\textsc{Definition:}\cite{parwshed} \newline\newline
 Let $f \in C(D)$ have $minima$ $\{m_{k}\}_{k \in I}$, for some index set $I$. The catchment basin $CB(m_i)$ of a minimum $m_i$ is defined as the set of points $x \in D$ which are topographically closer to $m_i$ than to any other regional minimum $m_j$:
 \begin{center}
 \begin{equation*}
@@ -126,45 +139,192 @@ Let's use Figure \ref{fig:example_1} from \cite{parwshed} as an example of the a
 \end{figure}
 
 \subsection{Implementation}
-As we previously discussed, we attempted to implement the immersion approach. The pseudo code below was provided by Soille \cite{soilletestbook}.
+As we previously discussed, we attempted to implement the immersion approach. The pseudo code \href{alg:immersion_alg} below was provided by Soille \cite{soilletextbook}.
 \newline
-
-\begin{algorithm}
-\caption{Watershed using flooding simulations}\label{euclid}
-\begin{algorithmic}[1]
-\Procedure{watershed}{}
-\State $\textit{mask} \gets \text{-2  ;  }  \textit{initial value of a threshold level}$
-\State $\textit{wshed} \gets \text{0  ;  }  \textit{value of pixels belonging to watersheds}$
-\State $\textit{inqueue} \gets \text{-3  ;  } \textit{value assigned to pixels put into the queue}$
-\BState \emph{top}:
-\If {$i > \textit{stringlen}$} \Return false
-\EndIf
-\State $j \gets \textit{patlen}$
-\BState \emph{loop}:
-\If {$\textit{string}(i) = \textit{path}(j)$}
-\State $j \gets j-1$.
-\State $i \gets i-1$.
-\State \textbf{goto} \emph{loop}.
-\State \textbf{close};
-\EndIf
-\State $i \gets i+\max(\textit{delta}_1(\textit{string}(i)),\textit{delta}_2(j))$.
-\State \textbf{goto} \emph{top}.
-\EndProcedure
-\end{algorithmic}
-\end{algorithm}
 
 \subsubsection{Pixel Mapping}
 \subsubsection{Neighbouring Pixels}
 \subsubsection{Queue Data Structure}
 
+\newpage
+
+\vspace*{-3cm}
+
+\begin{algorithm}[H]
+\caption{Watershed using flooding simulations}\label{euclid}
+\begin{algorithmic}[1]
+\label{alg:immersion_alg}
+\Procedure{watershed}{}
+\State $\textit{mask} \gets \text{-2  ;  }  \textit{initial value of a threshold level}$
+\State $\textit{wshed} \gets \text{0  ;  }  \textit{value of pixels belonging to watersheds}$
+\State $\textit{inqueue} \gets \text{-3  ;  } \textit{value assigned to pixels put into the queue}$
+\State $\textit{init} \gets \text{-1  ;  } \textit{initial value of f0)}$
+\newline
+\BState \emph{Input : $f_i$}, \text{grey tone image (non negative integers)}:
+\BState \emph{Output : $f_0$}, \text{image of labelled catchment basins}:
+\newline
+\Procedure{Initialisations}{}
+\BState \text{Value} \emph{$f_i$} \text{is assigned to each pixel of $f_0$}:
+\BState \emph{current\_label} $\gets$ \text{0}:
+\BState \emph{flag: } \text{Boolean variable}:
+\BState \emph{$N(p)$} \text{is the set of neighbours of P}:
+\EndProcedure
+\newline
+\BState \textbf{Sort} the pixels of $f_i$ in the increasing order of their grey values. \newline
+\For{$h \gets h_{min}$ \textbf{to} $h_{max}$}
+\Comment{geodesic SKIZ of level h - 1 inside level h}
+    \For{pixel p}
+    \Comment{such that $f_{i}(p) = h$}
+        \BState $f_{0}(p) \gets$ \text{mask}
+        \If{ $\exists$ p' $\in$ N(p) | $f_{0}(p') > 0$ \textbf{OR} $f_{0}(p')$ = wshed}
+            \BState \emph{$f_{0}(p) \gets$ inqueue}
+            \Comment{fifo.add(p)};
+        \EndIf
+    \EndFor
+\EndFor
+\While{fifo.empty() = false}
+    \BState p $\gets$ fifo.retrieve();
+    \For{pixel p' $\in N(p)$}
+        \If{$f_{0}(p') > 0$}
+        \Comment{i.e., p' belongs to an already labelled basin}
+            \If{$f_{0}(p) = $ inqueue \textbf{OR} ($f_{0}(p) = $ wshed \textbf{\&} flag = true)}
+                \State $f_{0}(p)$ \gets $f_{0}(p')$
+            \ElsIf{$f_{0}(p) >$  0 \textbf{AND} $f_{0}(p) \neq f_{0}(p')$}
+                \State $f_{0}(p) \gets wshed$
+                \Comment{flag $\gets$ false}
+            \EndIf
+        \EndIf
+        \ElsIf{$f_{0}(p') = $ wshed}
+            \If{$f_{0}(p) = $inqueue}
+                \State $f_{0}(p) \gets$ wshed;
+                \State flag $\gets$ true;
+            \EndIf
+        \ElsIf{$f_{0}(p')$ = ,ask}
+            \State $f_{0}(p) \gets$ inqueue;
+            \State $f_{0}(p') \gets$ mask;
+        \EndIf
+    \EndFor
+    \For{pixel p} 
+    \Comment{such that $f_{i}(p)$ = mask}
+        \If{$f_{0}(p)$ = mask}
+        \Comment{check for new minima}
+            \State current\_label $\gets$ current\_label + 1;
+            \State fifo.add(p);
+            \State $f_{0}(p) \gets $ current\_label;
+            \While{fifo.empty() = false}
+                \State $p' \gets$ fifo.retrieve();
+                \For{p" $\in N(p')$}
+                    \If{$f_{0}(p'')$ = mask}
+                        \State fifo.add(p'');
+                        \State $f_{0}(p'') \gets$ current\_label;
+                    \EndIf
+                \EndFor
+            \EndWhile
+        \EndIf
+    \EndFor    
+\EndWhile
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
 \section{Experiments & Results}
 
 
 \section{Comparison}
+The breadth-first implementation that we're discussing uses a FIFO (First in First Out) queue to find the level of pixels of constant grey value as we have seen, c.f Algorithm \ref{alg:immersion_alg}. For each of these thresholds a pixel is stored in the empty queue, followed by the 'flooding' which runs until the queue is empty. 
+\subsection{Time Complexity}
+
+\begin{flushleft}
+We ran some tests on the algorithm which was presented in order to visualize the time complexity of this algorithm. 
+We can clearly see that the time complexity is linear in the number of pixels in the image; however, according \cite{timecomplexity} the theoretical time complexity would change from linear to quadratic due to the repeated processing of the watershed pixels.
+
+\end{flushleft}
+
+\begin{figure}[ht]
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{tests/performane_8.png}
+  \caption{8 - Neighbours}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{tests/performance_4.png}
+  \caption{4 Neighbours}
+  \label{fig:sub2}
+\end{subfigure}
+\caption{Scatter Plot  \& Best Fit curve of results}
+\label{fig:general_test}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{neighbor-chartbar.png}
+    \caption{Different neighbors bar chart.}
+    \label{fig:neighbor-chartbar}
+\end{figure}
+
+\subsection{N-Neighbors Influence}
+\begin{flushleft}
+After the previous tests, we noticed how the number of neighbors scanned impacts the time the algorithm; therefore, we decided to run different test with various neighbor sizes (2, 4, 8, 16) and visualized the differences as seen in  Figure~\ref{fig:neighbor-test}. We ran a test on random graphs of size [n , n] with n ranging from \numrange[range-phrase = -- = --]{1}{500}. We also ran a test, c.f \ref{fig:neighbor-chartbar} using 2, 4, 6, 8, 16, 32, and 64 to be able to determine how exactly the amount of neighbors influences the overall run time of the algorithm on a 512*512 image.
+
+This helps us explain how the algorithm heavily depends on its neighbors and why, as previously mentioned, the time complexity can vary from linear to quadratic. We almost always see a doubling the overall time until we reach 64 neighbors and notice a much more significant jump.
+\end{flushleft}
+
+\begin{figure}[H]
+  \begin{subfigure}{6cm}
+    \centering\includegraphics[width=6cm]{tests/test_ws_2.png}
+    \caption{2 - Neighbors}
+  \end{subfigure}
+  \begin{subfigure}{6cm}
+    \centering\includegraphics[width=5.5cm]{tests/test_ws_4.png}
+    \caption{4 - Neighbors}
+  \end{subfigure}
+ 
+  \begin{subfigure}{6cm}
+    \centering\includegraphics[width=6cm]{tests/test_ws_8.png}
+    \caption{8 - Neighbors}
+  \end{subfigure}
+  \begin{subfigure}{6cm}
+    \centering\includegraphics[width=5.5cm]{tests/test_ws_16.png}
+    \caption{16 - Neighbors}
+  \end{subfigure}
+  \caption{Scatter Plot \& Best Fit curve for different neighbors}
+  \label{fig:neighbor-test}
+\end{figure}
+
+
+
+\subsection{The queue disadvantages}
+\begin{flushleft}
+One of the main advantages of this algorithm is how it utilizes the queue to reduce time complexity and keeps all our operations feasible in linear time but this also comes at a cost. When running our initial test, we tried running multiple processes at the same time in for optimal performance; however, we ran into many issues because of the nature of the algorithm. The required size of the queue is not known in advance, and memory is addressed in a very unstructured and "blind" manner, causing performance degradation on
+virtual memory and especially on parallel computing, since it requires a lot of synchronization and tends to leave with many imprecise results. In the figures below you can clearly see the difference when running the processes concurrently vs. running them in normal linear manner.
+\end{flushleft}
+
+\begin{figure}[ht]
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{tests/concurent.png}
+  \caption{Concurrent Testing}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{tests/consecutive.png}
+  \caption{Consecutive Testing}
+  \label{fig:sub2}
+\end{subfigure}
+\caption{Scatter Plot  \& Best Fit Cruves for Consecutive and Concurrent testing. }
+\label{fig:concurrency_test}
+\end{figure}
 
 
 \section{Task Distribution}
-
+\begin{flushleft}
+TEXT GOES HERE
+\end{flushleft}
 
 \newpage
 
