@@ -23,7 +23,8 @@ def getParamsExperiments(argss):
     infile = "../input/" + argv[1]
     outfile4 = "../output/4_" + argv[3]
     outfile8 = "../output/8_" + argv[3]
-    return op, int(distanced), infile, outfile4, outfile8
+    outfile12 = "../output/12_" + argv[3]
+    return op, int(distanced), infile, outfile4, outfile8, outfile12
 
 def getParams(argss):
     op = False
@@ -195,7 +196,7 @@ def watershed(img, n):
 
 
 def main():
-    textfile, d, infile, outfile4, outfile8 = getParamsExperiments(argv)
+    textfile, d, infile, outfile4, outfile8, outfile12 = getParamsExperiments(argv)
     if textfile:
         if d:
             print("Input: Textfile, Distance Transform Required")
@@ -203,12 +204,14 @@ def main():
             img = np.array(Image.open("./temp_distanced.png"))
             imageio.imwrite(outfile4, watershed(img, 4))
             imageio.imwrite(outfile8, watershed(img, 8))
+            imageio.imwrite(outfile12, watershed(img, 12))
         else:
             print("Input: Textfile, No Distance Transform")
             genMatrix(infile)
             img = np.array(Image.open("./temp.png"))
             imageio.imwrite(outfile4, watershed(img, 4))
             imageio.imwrite(outfile8, watershed(img, 8))
+            imageio.imwrite(outfile12, watershed(img, 12))
     else:
         img = np.array(Image.open(infile))
         if (len(img.shape) > 2):
@@ -218,6 +221,69 @@ def main():
             print("Input: GS Image")
         imageio.imwrite(outfile4, watershed(img, 4))
         imageio.imwrite(outfile8, watershed(img, 8))
+        imageio.imwrite(outfile12, watershed(img, 12))
+
+def experiments():
+    textfile, d, infile, outfile4, outfile8 = getParamsExperiments(argv)
+    img = np.array(Image.open(infile))
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    # ret, thresh = cv2.threshold(grayed,0,255,cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
+    # # noise removal
+    # kernel = np.ones((3,3),np.uint8)
+    # opening = cv2.morphologyEx(thresh,cv2.MORPH_OPEN,kernel, iterations = 2)
+
+    # # sure background area
+    # sure_bg = cv2.dilate(opening,kernel,iterations=3)
+
+    # # Finding sure foreground area
+    # dist_transform = cv2.distanceTransform(opening,cv2.DIST_L2,5)
+    # ret, sure_fg = cv2.threshold(dist_transform,0.7*dist_transform.max(),255,0)
+
+    # # Finding unknown region
+    # sure_fg = np.uint8(sure_fg)
+    # unknown = cv2.subtract(sure_bg,sure_fg)
+
+    # # Marker labelling
+    # ret, markers = cv2.connectedComponents(sure_fg)
+
+    # # Add one to all labels so that sure background is not 0, but 1
+    # markers = markers+1
+
+    # # Now, mark the region of unknown with zero
+    # markers[unknown==255] = 0
+
+    # # imageio.imwrite("../output/openedTdilated_coins.jpg", markers)
+    # markers = watershed(markers, 8)
+    # img[markers == -1] = [255,0,0]
+    # shifted = cv2.pyrMeanShiftFiltering(img, 21, 51)
+    # gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # thresh = cv2.threshold(img, 0, 255,cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
+    # dist_transform = cv2.distanceTransform(thresh,cv2.DIST_L2,5)
+    # ret, sure_fg = cv2.threshold(dist_transform,0.7*dist_transform.max(),255,0)
+    # sure_fg = np.uint8(sure_fg)
+    # ret, markers = cv2.connectedComponents(sure_fg)
+    # img = watershed(img, 4)
+    kernel5 = np.ones((7,7),np.float32)/25
+    # dst = cv2.filter2D(img,-1,kernel5)
+    # blur = cv2.GaussianBlur(img,(7,7),0)
+    blur = cv2.medianBlur(img,5)
+    # blur = cv2.bilateralFilter(img,9,75,75)
+    # (thresh, im_bw) = cv2.threshold(dst, 150, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+    # kernel = np.ones((2,2),np.uint8)
+    # kernel2 = np.ones((3,3),np.uint8)
+    # eroded = cv2.erode(thresh,kernel,iterations=1)
+    # dilated = cv2.dilate(eroded,kernel2,iterations=2)
+    # eroded = cv2.erode(dilated,kernel,iterations=1)
+    # opening = cv2.morphologyEx(thresh,cv2S.MORPH_OPEN,kernel, iterations = 1)
+    # closing = cv2.morphologyEx(thresh,cv2.MORPH_CLOSE,kernel, iterations = 2)
+    imageio.imwrite("./experiments/zebra/zebraMed.jpg", blur)
+    imageio.imwrite("./experiments/zebra/zebraM_4.jpg", watershed(blur, 4))
+    imageio.imwrite("./experiments/zebra/zebraM_8.jpg", watershed(blur, 8))
+    imageio.imwrite("./experiments/zebra/zebraM_12.jpg", watershed(blur, 12))
+    imageio.imwrite("./experiments/zebra/zebraM_16.jpg", watershed(blur, 16))
+    imageio.imwrite("./experiments/zebra/zebraM_20.jpg", watershed(blur, 20))
 
 if __name__ == "__main__":
+    # experiments()
     main()
