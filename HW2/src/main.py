@@ -23,18 +23,20 @@ def getParamsExperiments(argss):
     infile = "../input/" + argv[1]
     outfile4 = "../output/4_" + argv[3]
     outfile8 = "../output/8_" + argv[3]
-    return op, int(distanced), infile, outfile4, outfile8
+    outfile12 = "../output/12_" + argv[3]
+    return op, int(distanced), infile, outfile4, outfile8, outfile12
 
 def getParams(argss):
     op = False
-    if len(argss) < 4 or int(argv[1]) not in (4, 8):
-        print("usage: <input file> <4 or 8 neighbours> <output file.png/jpg>")
+    if len(argss) < 4 or int(argv[2]) not in (4, 8):
+        print("usage: <input file> <4 or 8 neighbours> <1 or 0 distanced> <output file.png/jpg>")
         exit()
-    if argv[2].endswith(".txt"):op = True
-    neighbours = argv[1]
-    infile = "../input/" + argv[2]
-    outfile = "../output/" + argv[3]
-    return op, int(neighbours), infile, outfile
+    if argv[1].endswith(".txt"):op = True
+    neighbours = argv[2]
+    distanced = argv[3]
+    infile = "../input/" + argv[1]
+    outfile = "../output/" + argv[4]
+    return op, int(neighbours), int(distanced), infile, outfile
 
 def distanceTransform(filename):
     with open(filename, 'r') as f:
@@ -195,20 +197,18 @@ def watershed(img, n):
 
 
 def main():
-    textfile, d, infile, outfile4, outfile8 = getParamsExperiments(argv)
-    if textfile:
+    t, n, d, infile, outfile = getParams(argv)
+    if t:
         if d:
             print("Input: Textfile, Distance Transform Required")
             distanceTransform(infile)
             img = np.array(Image.open("./temp_distanced.png"))
-            imageio.imwrite(outfile4, watershed(img, 4))
-            imageio.imwrite(outfile8, watershed(img, 8))
+            imageio.imwrite(outfile, watershed(img, n))
         else:
             print("Input: Textfile, No Distance Transform")
             genMatrix(infile)
             img = np.array(Image.open("./temp.png"))
-            imageio.imwrite(outfile4, watershed(img, 4))
-            imageio.imwrite(outfile8, watershed(img, 8))
+            imageio.imwrite(outfile, watershed(img, n))
     else:
         img = np.array(Image.open(infile))
         if (len(img.shape) > 2):
@@ -216,8 +216,8 @@ def main():
             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         else:
             print("Input: GS Image")
-        imageio.imwrite(outfile4, watershed(img, 4))
-        imageio.imwrite(outfile8, watershed(img, 8))
+        imageio.imwrite(outfile, watershed(img, n))
+
 
 if __name__ == "__main__":
     main()
