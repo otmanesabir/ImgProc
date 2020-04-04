@@ -1,13 +1,10 @@
 import numpy as np
 import timeit
-import matplotlib.pyplot as plt
 import threading
 from tqdm import tqdm
 from collections import deque
-from PIL import Image
 import imageio
 import matplotlib.pyplot as plt
-import pandas as pd
 from progressbar import ProgressBar
 
 
