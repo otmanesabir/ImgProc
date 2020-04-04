@@ -1,32 +1,29 @@
-# Image Processing HW2 - Watershed Transform
+# Watershed Transform
 
 ## Introuction
 
-Explain purpose and process.
+The watershed transform is a classical segmentation - separating differentobjects in an image - algorithm in the world of image processing; it initially derives from the the geological watershed which means the elevated terrainthat separates neighboring drainage basins.
 
-## Structure
+### The file structure
+    .
+    ├── src                     # Source Code
+    │   ├── main.py             # Algorithm Implementation
+    │   ├── test.py             # Script for bulk testing
+    ├── input                   # All test inputs used for expirements
+    ├── output                  # Watershed results
+    │   ├── experiment          # Experiment specific
+    │   └── ...                 # General
+    ├── report                  # Watershed report  
+    │   ├── main.tex            # LaTeX code
+    │   ├── report.pdf          # Rendered Report
+    │   ├── experiments         # Expirements in the report
+    │   ├── time                # Time complexity tests                
+    │   ├── img                 # Other images
+    │   └── ...    
+    └── ...                  # source code and algorithm implementation
+    
+> ... may include `LICENSE`, `README.md`, `images`.
 
-File structure and hierarchy goes here.
-
-## TO-DO
-
-* ~Create neighbour function~
-* ~Create pixel function~
-* ~Create test function~
-* Generate results and tests
-  * ~Generate output for the inverse of the distance transform 'f1_dinv.txt' derived from a blob image~
-  * Generate output for the circle image (f2.txt). For this image, explain the differences between the 4 and 8 connected neighborhood implementations.
-    * ~Generate output circle~
-    * ~Explain difference in report~
-  * Generate output for three further images of your choice that shows multiple objects each to be segmented. Before applying the watershed transform, you must derive a suitable segmentation function through a method of your choice. This could include, for example, morphological gradient computation based on erosions and/or dilations, noise removal (e.g. median filter) or smoothing (e.g. bilateral or binomial filter) of the image before and/or after gradient computation, etc.
-  
-* Report
-  * ~Section I~
-  * ~Section II~
-  * Section III
-  * Section IV
-  * Section V
-  * Section VI
  
 
 
