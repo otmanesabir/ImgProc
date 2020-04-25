@@ -1,8 +1,21 @@
 import numpy as np
 import math
+import imageio
+from PIL import Image
+from tqdm import tqdm
+
+
+def findHistogram(img):
+    # filled soon
+
+
+def getImg(path):
+    img = np.array(Image.open(path))
+    return img
 
 def draft():
-    #the draft we made the other day.    mi = 0.0
+    #the draft we made the other day.
+    mi = 0.0
     jointD = [[0.2, 0.1, 0.2],
         [0, 0.2, 0.1],
         [0.1, 0, 0.1]]
@@ -20,7 +33,7 @@ def draft():
     print(mi)
 
 def main():
-    print("test")
+    findHistogram(getImg("../input/nuclei.png"))
 
 
 if __name__ == '__main__':
