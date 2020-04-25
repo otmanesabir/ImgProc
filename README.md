@@ -19,5 +19,5 @@ This repository contains a number of image processing algorithms which are used 
 
 | Algorithm | Report | Source Code |
 | --- | --- | --- |
-| **Opening & Closing** | [`report.pdf`](HW1/report/final/report.pdf) | [`main.py`](HW1/src/main.py) |
-| **Watershed Transform** | [`report.pdf`](HW2/report/report.pdf) | [`main.py`](HW2/src/main.py) |
+| **Opening & Closing** | [`report.pdf`](Primitive%20Morphological%20Operations/report/report.pdf) | [`main.py`](Primitive%20Morphological%20Operations/src/main.py) |
+| **Watershed Transform** | [`report.pdf`](Watershed%20Transform/report/report.pdf) | [`main.py`](Watershed%20Transform/src/main.py) |
