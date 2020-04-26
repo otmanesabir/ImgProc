@@ -4,7 +4,6 @@ import seaborn as sns
 from scipy.stats import entropy as scipy_entropy
 from PIL import Image
 
-plt.style.use('seaborn')
 
 def splitImage(img):
     split_img = Image.Image.split(img)
@@ -31,7 +30,7 @@ def mutualInfoCalc(img, num_bins):
         mis.append(entropyCalc(np.asarray(top).flatten()) + entropyCalc(np.asarray(bottoms[i]).flatten()) - entropyCalc(np.asarray(hist_img).flatten()))
     return mis
 
-def miSingle(x, y, num_bins):
+def miSingle(x, y, num_bins)
     hist = np.histogram2d(np.asarray(x).flatten(), np.asarray(y).flatten(), bins=num_bins)
     return entropyCalc(np.asarray(x).flatten()) + entropyCalc(np.asarray(y).flatten()) - entropyCalc(np.asarray(Image.fromarray(hist[0], 'RGB')).flatten())
 
