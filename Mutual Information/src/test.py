@@ -31,6 +31,27 @@ def miSingle(x, y, num_bins):
     return entropyCalc(np.asarray(x).flatten()) + entropyCalc(np.asarray(y).flatten()) - entropyCalc(np.asarray(Image.fromarray(hist[0], 'RGB')).flatten())
 
 
+def barChart():
+    top = []
+    i = 100
+    image = np.round(np.random.rand(2000, 2000) * 255)
+    image2 = np.round(np.random.rand(2000, 2000) * 255)
+    while(i < 1300):
+        start = timeit.default_timer()
+        miSingle(image, image2, i)
+        stop = timeit.default_timer()
+        top.append((i, (stop - start)))
+        i += 100
+    labels, ys = zip(*top)
+    xs = np.arange(len(labels))
+    width = 0.5
+    colors = ['#38B6FF' for _ in range (12)]
+    plt.bar(xs, ys, width, align='center', color=colors)
+    plt.xticks(xs, labels)  # Replace default x-ticks with xs, then replace xs with labels
+    plt.xlabel('Bin Size', fontsize=12)
+    plt.ylabel('Time [S]', fontsize=12)
+    plt.savefig('neighbor-barchart.png')
+
 
 def test_rnd(n):
     x = []
@@ -49,4 +70,5 @@ def test_rnd(n):
 
 
 if __name__ == "__main__":
-    test_rnd(2000)
+    barChart()
+    #test_rnd(2000)
