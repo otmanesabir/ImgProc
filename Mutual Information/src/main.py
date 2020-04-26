@@ -1,4 +1,3 @@
-import matplotlib
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -17,10 +16,6 @@ def cropImage(img):
     top = r.crop((20, 0, w-20, h))
     return top, [g.crop((40-x, 0, w-x, h)) for x in range(40, -1, -1)]
 
-def shannon_entropy(image, base=2):
-    _, counts = np.unique(image, return_counts=True)
-    return scipy_entropy(counts, base=base)
-
 def entropyCalc(X):
     uniq = set(X)
     P = [np.mean(X == x) for x in uniq]
@@ -35,6 +30,10 @@ def mutualInfoCalc(img, num_bins):
         hist_img = Image.fromarray(hist[0], 'RGB')
         mis.append(entropyCalc(np.asarray(top).flatten()) + entropyCalc(np.asarray(bottoms[i]).flatten()) - entropyCalc(np.asarray(hist_img).flatten()))
     return mis
+
+def miSingle(x, y, num_bins):
+    hist = np.histogram2d(np.asarray(x).flatten(), np.asarray(y).flatten(), bins=num_bins)
+    return entropyCalc(np.asarray(x).flatten()) + entropyCalc(np.asarray(y).flatten()) - entropyCalc(np.asarray(Image.fromarray(hist[0], 'RGB')).flatten())
 
 def binSizeChange(img):
     top, bottoms = cropImage(img)
