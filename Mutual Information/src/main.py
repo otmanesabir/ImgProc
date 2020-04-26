@@ -1,11 +1,9 @@
-import matplotlib
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.stats import entropy as scipy_entropy
 from PIL import Image
-
-plt.style.use('seaborn')
+from matplotlib.cbook import get_sample_data
 
 def splitImage(img):
     split_img = Image.Image.split(img)
@@ -16,10 +14,6 @@ def cropImage(img):
     w, h = img.size
     top = r.crop((20, 0, w-20, h))
     return top, [g.crop((40-x, 0, w-x, h)) for x in range(40, -1, -1)]
-
-def shannon_entropy(image, base=2):
-    _, counts = np.unique(image, return_counts=True)
-    return scipy_entropy(counts, base=base)
 
 def entropyCalc(X):
     uniq = set(X)
@@ -36,6 +30,10 @@ def mutualInfoCalc(img, num_bins):
         mis.append(entropyCalc(np.asarray(top).flatten()) + entropyCalc(np.asarray(bottoms[i]).flatten()) - entropyCalc(np.asarray(hist_img).flatten()))
     return mis
 
+def miSingle(x, y, num_bins):
+    hist = np.histogram2d(np.asarray(x).flatten(), np.asarray(y).flatten(), bins=num_bins)
+    return entropyCalc(np.asarray(x).flatten()) + entropyCalc(np.asarray(y).flatten()) - entropyCalc(np.asarray(Image.fromarray(hist[0], 'RGB')).flatten())
+
 def binSizeChange(img):
     top, bottoms = cropImage(img)
     mis = []
@@ -46,23 +44,34 @@ def binSizeChange(img):
     return mis
 
 
-def mutualInformationTests():
-    flower = Image.open("../input/flower.png")
-    fig = plt.figure()
-    plt.ylabel('Mutual Information')
-    plt.xlabel('Image Translations')
-    sns.lineplot([x for x in range(41)], mutualInfoCalc(flower, 256))
-    plt.savefig("../output/flower_translations")
-    puffin = Image.open("../input/puffin.jpg")
+def mutualInformationTests(puffin):
     fig = plt.figure()
     plt.ylabel('Mutual Information')
     plt.xlabel('Image Translations')
     sns.lineplot([x for x in range(41)], mutualInfoCalc(puffin, 256))
     plt.savefig("../output/puffin_translations")
+    fig = plt.figure()
+    plt.ylabel('Mutual Information')
+    plt.xlabel('Number of Bins')
+    sns.lineplot([x for x in range(255)], binSizeChange(puffin))
+    plt.savefig("../output/puffin_binSize")
 
+def seperatorImg(image):
+    titles = ['Flower', 'Red channel', 'Green channel', 'Blue channel']
+    cmaps = [None, plt.cm.gray, plt.cm.gray, plt.cm.gray]
+    fig, axes = plt.subplots(1, 4, figsize=(13, 3))
+    objs = zip(axes, (image, *image.transpose(2, 0, 1)), titles, cmaps)
+    for ax, channel, title, cmap in objs:
+        ax.imshow(channel, cmap=cmap)
+        ax.set_title(title)
+        ax.set_xticks(())
+        ax.set_yticks(())
+    plt.savefig('../output/RGB1-Flower.png')
 
 def main():
-    mutualInformationTests()
+    image = plt.imread('../input/flower.png')
+    seperatorImg(image)
+
 
 
 
