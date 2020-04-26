@@ -17,7 +17,8 @@ This repository contains a number of image processing algorithms which are used 
 
 ### Implementations
 
-| Algorithm | Report | Source Code |
-| --- | --- | --- |
-| **Opening & Closing** | [`report.pdf`](Primitive%20Morphological%20Operations/report/report.pdf) | [`main.py`](Primitive%20Morphological%20Operations/src/main.py) |
-| **Watershed Transform** | [`report.pdf`](Watershed%20Transform/report/report.pdf) | [`main.py`](Watershed%20Transform/src/main.py) |
+| Algorithm | Report | Source Code | Jupyter Notebook
+| :---: | :---: | :---: | :---: |
+| **Opening & Closing** | [`report.pdf`](Primitive%20Morphological%20Operations/report/report.pdf) | [`main.py`](Primitive%20Morphological%20Operations/src/main.py) | |
+| **Watershed Transform** | [`report.pdf`](Watershed%20Transform/report/report.pdf) | [`main.py`](Watershed%20Transform/src/main.py) | |
+| **Watershed Transform** | [`report.pdf`](Mutual%20Information/report/report.pdf) | [`main.py`](Mutual%20Information/src/algorithm.py) | [`explore.ipynb`](Mutual%20Information/src/explore.ipynb) <br><br> A cool notebook made by [Aadil Kumar](https://github.com/aadilk96)|
