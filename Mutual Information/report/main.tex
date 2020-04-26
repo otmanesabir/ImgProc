@@ -90,7 +90,7 @@ The third homework assignment required us to implement the similarity metric alg
 \vspace{7mm}
 \begin{enumerate}
     \item Implement the algorithm.
-    \item Choose 3 images from the internet and 1separate the green and red channels as two separate gray scale images each. Crop the green channel by cutting 20 pixels from the left and right sides, respectively - resulting in a cropped green channel image with 40 pixels smaller than the red channel image. Then virtually move the red channel images in x-direction over the corresponding green channel image in 41 steps from the left to right, and compute the mutual information of the overlapping regions for every step.
+    \item Choose 3 images from the internet and separate the green and red channels as two separate gray scale images each. Crop the green channel by cutting 20 pixels from the left and right sides, respectively - resulting in a cropped green channel image with 40 pixels smaller than the red channel image. Then virtually move the red channel images in x-direction over the corresponding green channel image in 41 steps from the left to right, and compute the mutual information of the overlapping regions for every step.
     \item Plot the mutual information as a function of the x-position of the red channel image for all three chosen red/green image pairs.
 \end{enumerate}
 
@@ -148,6 +148,7 @@ In our implementation, we rely on calculating the shannon entropy in order to es
 The entropy is the expected value of the self-information, the self-information quantifies the level of information or surprise associated with one particular outcome or event of a random variable, whereas the entropy quantifies how "informative" or "surprising" the entire random variable is, averaged on all its possible outcomes.
 
 \subsection{Formal Definition : Shannon Entropy}
+\label{marker}
 \vspace{2mm}
 \begin{flushleft}
 \vspace{2mm }
@@ -166,6 +167,7 @@ where $b$ is the base of the logarithm used. Common values of b are 2, Euler's n
 \end{flushleft}
 
 \subsection{Formal definition : Mutual Information}
+\label{marker2}
 \vspace{2mm}
 \begin{flushleft}
 \vspace{2mm}
@@ -189,8 +191,7 @@ We decided to implement our algorithm in python for ease of implementation and t
 
 Before we start implementing, this is a list of all libraries and styles used in order to calculate, convert and plot our results.
 \end{flushleft}
-
-\begin{lstlisting}[language=Python, caption=]
+\begin{lstlisting}[language=Python]
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -200,9 +201,10 @@ plt.style.use('seaborn')
 \end{lstlisting}
 
 \subsection{Entropy function :}
-
-
-
+\vspace{2mm}
+\begin{flushleft}
+This is a simple implementation of the entropy function. Given the input parameter $X$ which in our case is a random variable, we get the entropy of the random variable. In subsection \textbf{\ref{marker}} we introduced a formal definition of this calculation.
+\end{flushleft}
 \begin{lstlisting}[language=Python, caption=Entropy Calculator]
 def entropyCalc(X):
     uniq = set(X)
@@ -211,6 +213,42 @@ def entropyCalc(X):
 
 \end{lstlisting}
 
+\subsection{Converting the image}
+\vspace{2mm}
+\begin{flushleft}
+In order for our entropy function to properly compute these values we need to convert the image from the matrices we receive to appropriate signals. We do this by using the numpy histogram functions in the case of the join histogram.
+\end{flushleft}
+\begin{lstlisting}[language=Python, caption=1D Signal]
+def convert1DSignal(x, nBins):
+    return np.histogram(np.asarray(x).flatten(), bins=nBins)[0]
+\end{lstlisting}
+
+\begin{lstlisting}[language=Python, caption=2D Signal (Joint Histogram)]
+def convert2DSignal(x, y, nBins):
+    hist = np.histogram2d(np.asarray(x).flatten(), np.asarray(y).flatten(), bins=nBins)
+    return np.asarray(Image.fromarray(hist[0], 'RGB')).flatten()
+\end{lstlisting}
+
+\subsection{Mutual Information}
+\begin{flushleft}
+We now have all the required tools to calculate our mutual information estimation. The mutual information function will be very simple and will follow our definition in the subsection \textbf{\ref{marker2}}.
+\end{flushleft}
+
+\begin{lstlisting}[language=Python, caption=Mutual Information]
+def mutualInformation(x, y, nBins):
+    HX = entropyCalc(convert1DSignal(x, nBins))
+    HY = entropyCalc(convert1DSignal(y, nBins))
+    HXY = entropyCalc(convert2DSignal(x, y, nBins))
+    return HX + HY - HXY
+\end{lstlisting}
+
+\section{Experiments \& Results}
+
+\begin{flushleft}
+The experiments we were asked to conduct were an intuitive way of visualizing how mutual information exactly works. We were asked to choose 3 images from the internet and separate the green and red channels as two separate gray scale images each. Crop the green channel by cutting 20 pixels from the left and right sides, respectively - resulting in a cropped green channel image with 40 pixels smaller than the red channel image. Then virtually move the red channel images in x-direction over the corresponding green channel image in 41 steps from the left to right, and compute the mutual information of the overlapping regions for every step and then finally plot the mutual information as a function of the x-position of the red channel image for all three chosen red/green image pairs.
+\end{flushleft}
+
+\subsection{Puffin Experiment}
 \newpage
 
 \begin{thebibliography}{9}
