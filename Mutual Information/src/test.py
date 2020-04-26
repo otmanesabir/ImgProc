@@ -35,13 +35,13 @@ def miSingle(x, y, num_bins):
 def test_rnd(n):
     x = []
     y = []
-    i = 1
+    i = 100
     for _ in tqdm(range(n), desc="Mutual Information Calculator"):
         image1 = np.round(np.random.rand(i, i) * 255)
         image2 = np.round(np.random.rand(i, i) * 255)
         x.append(image1.size)
         start = timeit.default_timer()
-        miSingle(image1, image2, 5)
+        miSingle(image1, image2, 10)
         stop = timeit.default_timer()
         y.append(float(stop - start))
         i += 1
