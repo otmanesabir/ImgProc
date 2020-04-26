@@ -1,9 +1,22 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from scipy.stats import entropy as scipy_entropy
 from PIL import Image
-from matplotlib.cbook import get_sample_data
+
+
+def entropyCalc(X):
+    uniq = set(X)
+    P = [np.mean(X == x) for x in uniq]
+    return sum(-p * np.log2(p) for p in P)
+
+def mutualInfoCalc(img, num_bins):
+    top, bottoms = cropImage(img)
+    mis = []
+    for i in range(len(bottoms)):
+        hist = np.histogram2d(np.asarray(top).flatten(), np.asarray(bottoms[i]).flatten(), bins=num_bins)
+        hist_img = Image.fromarray(hist[0], 'RGB')
+        mis.append(entropyCalc(np.asarray(top).flatten()) + entropyCalc(np.asarray(bottoms[i]).flatten()) - entropyCalc(np.asarray(hist_img).flatten()))
+    return mis
 
 def splitImage(img):
     split_img = Image.Image.split(img)
@@ -15,25 +28,6 @@ def cropImage(img):
     top = r.crop((20, 0, w-20, h))
     return top, [g.crop((40-x, 0, w-x, h)) for x in range(40, -1, -1)]
 
-def entropyCalc(X):
-    uniq = set(X)
-    P = [np.mean(X == x) for x in uniq]
-    return sum(-p * np.log2(p) for p in P)
-
-
-def mutualInfoCalc(img, num_bins):
-    top, bottoms = cropImage(img)
-    mis = []
-    for i in range(len(bottoms)):
-        hist = np.histogram2d(np.asarray(top).flatten(), np.asarray(bottoms[i]).flatten(), bins=num_bins)
-        hist_img = Image.fromarray(hist[0], 'RGB')
-        mis.append(entropyCalc(np.asarray(top).flatten()) + entropyCalc(np.asarray(bottoms[i]).flatten()) - entropyCalc(np.asarray(hist_img).flatten()))
-    return mis
-
-def miSingle(x, y, num_bins):
-    hist = np.histogram2d(np.asarray(x).flatten(), np.asarray(y).flatten(), bins=num_bins)
-    return entropyCalc(np.asarray(x).flatten()) + entropyCalc(np.asarray(y).flatten()) - entropyCalc(np.asarray(Image.fromarray(hist[0], 'RGB')).flatten())
-
 def binSizeChange(img):
     top, bottoms = cropImage(img)
     mis = []
@@ -42,7 +36,6 @@ def binSizeChange(img):
         hist_img = Image.fromarray(hist[0], 'RGB')
         mis.append(entropyCalc(np.asarray(top).flatten()) + entropyCalc(np.asarray(bottoms[20]).flatten()) - entropyCalc(np.asarray(hist_img).flatten()))
     return mis
-
 
 def mutualInformationTests(puffin):
     fig = plt.figure()
@@ -69,11 +62,8 @@ def seperatorImg(image):
     plt.savefig('../output/RGB1-Flower.png')
 
 def main():
-    image = plt.imread('../input/flower.png')
-    seperatorImg(image)
-
-
-
+    puffin = Image.open("../input/puffin.jpg")
+    mutualInformationTests(puffin)
 
 if __name__ == '__main__':
     main()

@@ -68,6 +68,17 @@ def test_rnd(n):
         i += 1
     makePlot(x, y)
 
+def seperatorImg(image):
+    titles = ['Flower', 'Red channel', 'Green channel', 'Blue channel']
+    cmaps = [None, plt.cm.gray, plt.cm.gray, plt.cm.gray]
+    fig, axes = plt.subplots(1, 4, figsize=(13, 3))
+    objs = zip(axes, (image, *image.transpose(2, 0, 1)), titles, cmaps)
+    for ax, channel, title, cmap in objs:
+        ax.imshow(channel, cmap=cmap)
+        ax.set_title(title)
+        ax.set_xticks(())
+        ax.set_yticks(())
+    plt.savefig('../output/RGB1-Flower.png')
 
 if __name__ == "__main__":
     barChart()
