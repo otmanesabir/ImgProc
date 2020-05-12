@@ -2,6 +2,8 @@
 
 ## HANDWRITTEN DIGITS RECOGNITION
 
+After you run the notebook please move to src dir and run `tensorboard --logdir logs` to view the details.
+
 #### try to make ROC model because he spoke about it a lot during the class.
 
 * Still want to add a confusion board to tensorBoard
