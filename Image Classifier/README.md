@@ -1,9 +1,27 @@
 ### CNN HW
 
+## HANDWRITTEN DIGITS RECOGNITION
 
-Some main issues I found so far :
+#### try to make ROC model
 
-when running `pip install tensorflow` py would install the latest version. The tutorial does not use this version.
-I believe that after this new big release they reordered their function and so most of them are not accessible in the same way
-and require more/less attributes. The tutorial does not specify which tensor flow version it uses so for now I specified the v1 version
-since its the closest to what they're using.
+### The models
+####The tutorial model 
+Layers : 
+
+        self.conv1 = Conv2D(32, 3, activation='relu')
+        self.flatten = Flatten()
+        self.d1 = Dense(128, activation='relu')
+        self.d2 = Dense(10)
+
+###### look at which digits are wrong and which digits are right.
+
+* Convolution Layer w/ RELU activation
+    * Convolution is the first layer  to extract features from an input image.
+    Convolution preserves the relationship between pixels by learning image features using small
+    squares of input data. This model only has one feature detection layer. Our layer uses a 3*3 kernel.
+* Flattening Layer
+    * 
+* Dense Layer 1 w/ RELU activation
+* Dense Layer 2 w/ Linear activation
+
+
